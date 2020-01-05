@@ -16,6 +16,7 @@ class QuestionsScreen extends StatelessWidget {
       children: <Widget>[
         SubTitle(
           "Supported languages",
+          first: true,
           action: FlatButton.icon(
             textColor: AppColors.primary,
             label: Text("Add new supported language"),
@@ -114,8 +115,15 @@ class _AddSupportedLanguageDialogState extends State<AddSupportedLanguageDialog>
 class ThemeListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
+    return Column(
+      children: [Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: AppColors.divider))
+        ),
+        child: Text("Monument")
+      )]
     );
   }
 }

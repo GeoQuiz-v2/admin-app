@@ -10,5 +10,6 @@ class Values {
   static final weightBold = FontWeight.w700;
   static final weightBlack = FontWeight.w900;
 
-  static final normalSpacing = 25.0;
+  static final blockSpacing = 50.0;
+  static final normalSpacing = 10.0;
 }

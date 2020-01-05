@@ -5,13 +5,15 @@ import 'package:geoquizadmin/res/values.dart';
 class SubTitle extends StatelessWidget {
   final Widget action;
   final String text;
+  final bool first;
 
-  SubTitle(this.text, {this.action});
+  SubTitle(this.text, {this.action, this.first = false});
+  
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: Values.normalSpacing),
+      padding: EdgeInsets.only(top: first ? Values.normalSpacing : Values.blockSpacing, bottom: Values.normalSpacing),
       child: Row(
         children: <Widget>[
           Text(

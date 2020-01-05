@@ -4,6 +4,8 @@ import 'package:geoquizadmin/models/models.dart';
 import 'package:geoquizadmin/models/questions_provider.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
+import 'package:geoquizadmin/ui/widget/dialog.dart';
+import 'package:geoquizadmin/ui/widget/form_field.dart';
 import 'package:geoquizadmin/ui/widget/subtitle.dart';
 import 'package:provider/provider.dart';
 
@@ -83,30 +85,31 @@ class _AddSupportedLanguageDialogState extends State<AddSupportedLanguageDialog>
 
   bool inProgress = false;
 
+  final _formKey = GlobalKey<FormState>();
+  final _codeISOController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text("Add supported language"),
-      content: TextField(
-        decoration: InputDecoration(),
+    return AppDialog(
+      title: "Add supported language",
+      content: Form(
+        key: _formKey,
+        child: RoundedTextFormField(
+          hint: "ISO Code 2",
+          controller: _codeISOController,
+          validator: (value) => value.length == 2 ? null : "2 characters only.",
+        ),
       ),
-      actions: <Widget>[
-        if (!inProgress)
-          FlatButton(
-            child: Text("Cancel"), 
-            onPressed: () => Navigator.pop(context)
-          ),
-        FlatButton(
-          child: Text(inProgress ? "Loading" : "Add"), 
-          onPressed: inProgress ? null : () {
-            setState(() => inProgress = true);
-            Provider.of<QuestionsProvider>(context, listen: false).addSupportedLanguage(Language("es"))
-              .then((_) => Navigator.pop(context))
-              .whenComplete(() => setState(() => inProgress = false));
-          }
-        )
-      ],
+      onSubmit: onSubmit,
     );
+  }
+
+  Future<bool> onSubmit() async {
+    if (_formKey.currentState.validate()) {
+      await Provider.of<QuestionsProvider>(context, listen: false).addSupportedLanguage(Language(_codeISOController.text));
+      return true;
+    }
+    return false;
   }
 }
 
@@ -116,14 +119,45 @@ class ThemeListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: AppColors.divider))
-        ),
-        child: Text("Monument")
-      )]
+      children: [
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: AppColors.divider))
+          ),
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.image), 
+                color: AppColors.textColorLight,
+                onPressed: () {},
+              ),
+              SizedBox(width: Values.normalSpacing,),
+              SizedBox(
+                width: 200,
+                child: TextFormField(decoration: InputDecoration.collapsed(hintText: "Title"),)
+              ),
+              SizedBox(width: Values.normalSpacing,),
+              SizedBox(
+                width: 300,
+                child: TextFormField(decoration: InputDecoration.collapsed(hintText: "Entitled"),),
+              ),
+              Expanded(child: Container()),
+              FlatButton(child: Text("Add"), onPressed: () {},)
+            ],
+          )
+        )
+      ]
+    );
+  }
+}
+
+class AddThemeIconDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      
     );
   }
 }

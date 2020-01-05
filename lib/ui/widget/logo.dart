@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/res/colors.dart';
+import 'package:geoquizadmin/res/values.dart';
 
 
 class AppLogo extends StatelessWidget {
@@ -14,8 +15,8 @@ class AppLogo extends StatelessWidget {
     return RichText(
       text: TextSpan(
         text: "GeoQuiz",
-        style: Theme.of(context).textTheme.title.copyWith(fontSize: size??Theme.of(context).textTheme.title.fontSize),
-        children: [TextSpan(text: " Admin", style: TextStyle(color: AppColors.textColorLight ))]
+        style: Theme.of(context).textTheme.title.copyWith(fontSize: size??Theme.of(context).textTheme.title.fontSize, fontWeight: Values.weightBold),
+        children: [TextSpan(text: " Admin", style: TextStyle(color: AppColors.textColorLight , fontWeight: FontWeight.normal))]
       ),
     );
   }

@@ -9,8 +9,9 @@ class RoundedTextFormField extends StatelessWidget {
   final String hint;
   final TextEditingController controller;
   final bool password;
+  final String Function(String value) validator;
 
-  RoundedTextFormField({@required this.hint, this.controller, this.password = false});
+  RoundedTextFormField({@required this.hint, this.controller, this.password = false, this.validator});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class RoundedTextFormField extends StatelessWidget {
           errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
           focusedErrorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
         ),
-        validator: (value) => value.isEmpty ? "Empty field" : null,
+        validator: validator??((value) => value.isEmpty ? "Empty field" : null),
       ),
     );
   }

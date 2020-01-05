@@ -63,13 +63,13 @@ class GeoQuizApp extends StatelessWidget {
         fontFamily: "Roboto",
         textTheme: TextTheme(
           title: TextStyle(fontSize: Values.titleSize, color: AppColors.primary),
-          subtitle: TextStyle(fontSize: Values.pageTitleSize, fontWeight: Values.weightBlack)
+          subtitle: TextStyle(fontSize: Values.pageTitleSize, fontWeight: Values.weightBlack),
+          headline: TextStyle(fontSize: Values.dialogTitleSize, fontWeight: Values.weightBold)
         )
       ),
       home: Consumer<AuthenticationNotifier>(
 
         builder: (context , provider, _) {
-          print(provider.user);
           return !provider.isInit || provider.user == null
             ? AuthenticationScreen()
             : Template();

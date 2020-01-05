@@ -33,7 +33,6 @@ class AuthenticationNotifier extends ChangeNotifier {
   _initUserSnapshot() {
     var streamTransformer = StreamTransformer<FirebaseUser, User>.fromHandlers(
       handleData: (fbUser, sink) {
-        print("FB USER : " + fbUser.toString());
         sink.add(fbUser == null ? null : User(fbUser));
       }
     );

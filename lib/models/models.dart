@@ -1,6 +1,13 @@
 import 'package:flutter/foundation.dart';
 
 
+class Language {
+  String codeISO;
+
+  Language(this.codeISO);
+}
+
+
 class QuizTheme {
   String rawSVG;
   String title;

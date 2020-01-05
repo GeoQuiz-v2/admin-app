@@ -5,6 +5,8 @@ class Values {
   static final pageTitleSize = 30.0;
   static final pageSubtitle = 17.0;
 
+  static final radius = 6.0;
+
   static final weightBold = FontWeight.w700;
   static final weightBlack = FontWeight.w900;
 

@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:geoquizadmin/models/questions_provider.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
-import 'package:geoquizadmin/ui/dashboard.dart';
 import 'package:geoquizadmin/ui/template.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => QuestionsProvider())
+      ],
+      child: GeoQuizApp(),
+    )
+  );
+}
+
+class GeoQuizApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {

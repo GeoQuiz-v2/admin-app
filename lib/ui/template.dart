@@ -1,10 +1,14 @@
+import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geoquizadmin/models/auth_notifier.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/dashboard.dart';
 import 'package:geoquizadmin/ui/questions.dart';
+import 'package:geoquizadmin/ui/widget/logo.dart';
 import 'package:geoquizadmin/ui/widget/utils.dart';
+import 'package:provider/provider.dart';
 
 
 class Template extends StatefulWidget {
@@ -84,15 +88,25 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         elevation: 0,
         actionsIconTheme: IconThemeData(color: Colors.black),
         iconTheme: IconThemeData(color: AppColors.textColorLight),
-        title: RichText(
-          text: TextSpan(
-            text: "GeoQuiz",
-            style: Theme.of(context).textTheme.title,
-            children: [TextSpan(text: " Admin", style: TextStyle(color: AppColors.textColorLight))]
+        title: AppLogo(),
+        
+        actions: [
+          Chip(
+            backgroundColor: Colors.transparent,
+            label: Text(Provider.of<AuthenticationNotifier>(context).user.name),
+            avatar: Icon(Icons.account_circle),
+            elevation: 0,
+            deleteIcon: Icon(Icons.exit_to_app, color: AppColors.error),
+            deleteButtonTooltipMessage: "Sign out",
+            onDeleted: () => onSignOut(context),
           ),
-        ),
-        actions: [Icon(Icons.account_circle)],
+          SizedBox(width: Values.blockSpacing,)
+        ],
       );
+  }
+
+  onSignOut(context) {
+    Provider.of<AuthenticationNotifier>(context, listen: false).logout();
   }
 
   @override

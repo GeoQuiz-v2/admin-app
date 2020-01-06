@@ -43,7 +43,9 @@ class GeoQuizApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        
+        backgroundColor: Colors.white,
+        scaffoldBackgroundColor: Colors.white,
+        primaryColor: AppColors.primary,
         colorScheme: ColorScheme(
           primary: AppColors.primary,
           secondary: AppColors.primary,

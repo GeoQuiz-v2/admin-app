@@ -2,9 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/models/auth_notifier.dart';
+import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/widget/form_field.dart';
 import 'package:geoquizadmin/ui/widget/logo.dart';
+import 'package:geoquizadmin/ui/widget/utils.dart';
 import 'package:provider/provider.dart';
 
 
@@ -12,6 +14,7 @@ class AuthenticationScreen extends StatefulWidget {
   @override
   _AuthenticationScreenState createState() => _AuthenticationScreenState();
 }
+
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
@@ -25,16 +28,17 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Builder(
-          builder: (context) => Center(
-          child: Card(
-            child: Container(
-              padding: EdgeInsets.all(25),
-              constraints: BoxConstraints(maxWidth: 350),
-              child: Form(
-                key: _formKey,
+        builder: (context) => Center(
+          child: Container(
+            padding: EdgeInsets.all(50),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(Values.radius), border: Border.all(color: AppColors.divider)),
+            constraints: BoxConstraints(maxWidth: 450),
+            child: Form(
+              key: _formKey,
+              child: ScrollConfiguration(
+                behavior: BasicScrollWithoutGlow(),
                 child: ListView(
                   shrinkWrap: true,
-                  
                   children: <Widget>[
                     Center(child: AppLogo(size: 25,)),
                     SizedBox(height: Values.blockSpacing),
@@ -42,9 +46,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     SizedBox(height: Values.normalSpacing),
                     RoundedTextFormField(hint: "Password", controller: _passwordController, password: true,),
                     FlatButton.icon(
-                      label: Text("Log in"),
+                      label: Text(inProgress ? "Loading..." : "Log in"),
                       icon: Icon(Icons.done),
-                      onPressed: () => onSubmit(context),
+                      onPressed: inProgress ? null : () => onSubmit(context),
                     )
                   ],
                 ),
@@ -52,6 +56,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             ),
           ),
         ),
+      
       ),
     );
   }
@@ -60,18 +65,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     if (_formKey.currentState.validate()) {
       setState(() => inProgress = true);
       Provider.of<AuthenticationNotifier>(context, listen: false).signIn(_emailController.text, _passwordController.text)
-        .whenComplete(() => setState(() => inProgress = false))
-        .catchError((e) {
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: Text(e.toString()),
-              backgroundColor: Theme.of(context).colorScheme.error,
-              behavior: SnackBarBehavior.floating,
-              elevation: 0,
-            )
-          );
-        });
+        .then((_) => SnackBarFactory.showSuccessSnackbar(context: context, message: "Successfully logged"))
+        .catchError((e) => SnackBarFactory.showErrorSnabar(context: context, message: e.toString()))
+        .whenComplete(() => setState(() => inProgress = false));
     }
-
   }
 }

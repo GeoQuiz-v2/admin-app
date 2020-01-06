@@ -31,3 +31,28 @@ class ColorTransformation {
     return hslLight.toColor();
   }
 }
+
+
+class SnackBarFactory {
+  static showSuccessSnackbar({@required context, @required message}) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        behavior: SnackBarBehavior.floating,
+        elevation: 0,
+      )
+    );
+  }
+
+  static showErrorSnabar({@required context, @required message}) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+        behavior: SnackBarBehavior.floating,
+        elevation: 0,
+      )
+    );
+  }
+}

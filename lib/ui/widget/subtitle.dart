@@ -13,12 +13,12 @@ class SubTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: first ? Values.normalSpacing : Values.blockSpacing, bottom: Values.normalSpacing),
+      padding: EdgeInsets.only(top: first ? 0 : Values.blockSpacing, bottom: Values.normalSpacing),
       child: Row(
         children: <Widget>[
           Text(
             text.toUpperCase(),
-            style: TextStyle(fontSize: Values.pageSubtitle, fontWeight: Values.weightBlack),
+            style: TextStyle(fontSize: Values.pageSubtitle, fontWeight: Values.weightBold),
           ),
           SizedBox(width: 20,),
           if (action != null)

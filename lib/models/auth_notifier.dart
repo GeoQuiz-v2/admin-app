@@ -1,10 +1,10 @@
 
 import 'dart:async';
 
+import 'package:firebase/firebase.dart';
+import 'package:firebase/firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-
 
 
 
@@ -25,6 +25,7 @@ class AuthenticationNotifier extends ChangeNotifier {
   }
   
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final Firestore _firestore = firestore();
 
   bool isInit = false;
   User user;
@@ -33,7 +34,12 @@ class AuthenticationNotifier extends ChangeNotifier {
   _initUserSnapshot() {
     var streamTransformer = StreamTransformer<FirebaseUser, User>.fromHandlers(
       handleData: (fbUser, sink) {
-        sink.add(fbUser == null ? null : User(fbUser));
+        _firestore.collection("admin").doc("config").get()
+          .then((docSnap) {
+            bool isAdmin = (docSnap.data()["administrators"] as List<String>).contains(fbUser.uid);
+            sink.add(fbUser == null ? null : User(fbUser, admin: isAdmin));
+          })
+          .catchError((_) => sink.add(fbUser == null ? null : User(fbUser)));
       }
     );
 
@@ -62,9 +68,10 @@ class AuthenticationNotifier extends ChangeNotifier {
 }
 
 class User {
+  bool admin;
   FirebaseUser _fbUser;
 
-  User(this._fbUser);
+  User(this._fbUser, {this.admin = false});
 
   get name => _fbUser.displayName??_fbUser.email??_fbUser.uid;
 }

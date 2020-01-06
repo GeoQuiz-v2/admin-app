@@ -56,3 +56,14 @@ class SnackBarFactory {
     );
   }
 }
+
+
+/// As flutter_svg does NOT support web for now : https://github.com/dnfield/flutter_svg/issues/173
+class SvgPictureForWeb extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      
+    );
+  }
+}

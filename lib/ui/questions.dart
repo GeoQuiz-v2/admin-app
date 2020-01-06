@@ -4,7 +4,7 @@ import 'package:geoquizadmin/models/models.dart';
 import 'package:geoquizadmin/models/questions_provider.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
-import 'package:geoquizadmin/ui/widget/dialog.dart';
+import 'package:geoquizadmin/ui/widget/form_dialog.dart';
 import 'package:geoquizadmin/ui/widget/form_field.dart';
 import 'package:geoquizadmin/ui/widget/subtitle.dart';
 import 'package:provider/provider.dart';
@@ -85,31 +85,20 @@ class _AddSupportedLanguageDialogState extends State<AddSupportedLanguageDialog>
 
   bool inProgress = false;
 
-  final _formKey = GlobalKey<FormState>();
-  final _codeISOController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
-    return AppDialog(
+    return FormDialog(
       title: "Add supported language",
-      content: Form(
-        key: _formKey,
-        child: RoundedTextFormField(
-          hint: "ISO Code 2",
-          controller: _codeISOController,
-          validator: (value) => value.length == 2 ? null : "2 characters only.",
-        ),
-      ),
+      label: "ISO Code 2",
       onSubmit: onSubmit,
     );
   }
 
-  Future<bool> onSubmit() async {
-    if (_formKey.currentState.validate()) {
-      await Provider.of<QuestionsProvider>(context, listen: false).addSupportedLanguage(Language(_codeISOController.text));
-      return true;
-    }
-    return false;
+  Future<bool> onSubmit(String isoCode) async {
+    await Provider.of<QuestionsProvider>(context, listen: false).addSupportedLanguage(Language(isoCode));
+    return true;
   }
 }
 
@@ -131,7 +120,7 @@ class ThemeListWidget extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.image), 
                 color: AppColors.textColorLight,
-                onPressed: () {},
+                onPressed: () => onAddIcon(context),
               ),
               SizedBox(width: Values.normalSpacing,),
               SizedBox(
@@ -150,6 +139,14 @@ class ThemeListWidget extends StatelessWidget {
         )
       ]
     );
+  }
+
+  onAddIcon(context) {
+    showDialog(context: context, builder: (context) => FormDialog(
+      title: "Theme svg icon",
+      label: "Text("")",
+      onSubmit: (value) async {return true;},
+    ));
   }
 }
 

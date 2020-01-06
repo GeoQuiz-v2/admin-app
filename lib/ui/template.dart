@@ -13,9 +13,8 @@ import 'package:provider/provider.dart';
 class Template extends StatefulWidget {
 
   final Map<String, Widget> pages = {
-        "Dashboard" : DashboardScreen(),
     "Questions" : QuestionsScreen(),
-
+    "Dashboard" : DashboardScreen(),
   };
 
   Template({Key key}) : super(key: key);
@@ -63,7 +62,7 @@ class _TemplateState extends State<Template> {
                   children: <Widget>[
                     SizedBox(height: Values.normalSpacing,),
                     Text(currentPage.key, style: Theme.of(context).textTheme.subtitle,),
-                    SizedBox(height: Values.normalSpacing),
+                    SizedBox(height: Values.blockSpacing),
                     currentPage.value
                   ],
                 ),

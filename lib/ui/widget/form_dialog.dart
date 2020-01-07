@@ -1,7 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/widget/form_field.dart';
+
+
+
+
+class TextFieldDialog extends FormField<String> {
+
+  final String title;
+  final String label;
+  final Future<bool> Function(String) onSubmit;
+  final String Function(String) customValidator;
+
+  TextFieldDialog({@required IconData icon, @required this.title, @required this.label, @required this.onSubmit, this.customValidator, TextEditingController controller}) 
+  : super(
+      builder: (state) => 
+        InkWell(
+          child: Icon(icon, color: state.hasError ? AppColors.error : AppColors.textColorLight),
+          onTap: () {
+            showDialog(
+              context: state.context,
+              builder: (context) => FormDialog(
+                label: label,
+                title: title,
+                controller: controller,
+                onSubmit: (value) async => true,
+              )
+            );
+          },
+        ),
+        validator: (_) {
+          print(controller.text);
+          if (controller != null && customValidator != null) 
+            return customValidator(controller.text);
+          return null;
+        },
+        
+  );
+
+}
 
 
 class FormDialog extends StatefulWidget {
@@ -10,8 +49,9 @@ class FormDialog extends StatefulWidget {
   final String label;
   final Future<bool> Function(String) onSubmit;
   final String Function(String) validator;
+  final TextEditingController controller;
 
-  FormDialog({@required this.title, @required this.label, @required this.onSubmit, this.validator});
+  FormDialog({@required this.title, @required this.label, @required this.onSubmit, this.validator, this.controller});
 
   
   @override
@@ -23,7 +63,13 @@ class _FormDialogState extends State<FormDialog> {
   bool inProgress = false;
 
   final _formKey = GlobalKey<FormState>();
-  final _textController = TextEditingController();
+  TextEditingController _textController;
+
+  @override
+  void initState() {
+    super.initState();
+    _textController = widget.controller??TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +85,7 @@ class _FormDialogState extends State<FormDialog> {
           child: RoundedTextFormField(
             hint: widget.label,
             controller: _textController,
-            validator: widget.validator??((value) => value.isNotEmpty ? null : "2 characters only."),
+            validator: widget.validator??((value) => value.isNotEmpty ? null : "Invalid input"),
           )
         ),
       ),

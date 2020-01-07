@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/models/auth_notifier.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
-import 'package:geoquizadmin/ui/dashboard.dart';
-import 'package:geoquizadmin/ui/questions.dart';
+import 'package:geoquizadmin/ui/dashboard/dashboard.dart';
+import 'package:geoquizadmin/ui/database/database.dart';
 import 'package:geoquizadmin/ui/widget/logo.dart';
 import 'package:geoquizadmin/ui/widget/utils.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 class Template extends StatefulWidget {
 
   final Map<String, Widget> pages = {
-    "Questions" : QuestionsScreen(),
+    "Database" : DatabaseScreen(),
     "Dashboard" : DashboardScreen(),
   };
 

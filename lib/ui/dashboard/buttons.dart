@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geoquizadmin/env.dart';
 import 'package:geoquizadmin/res/assets.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
-import 'package:geoquizadmin/env.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 
 
 class ButtonData {
@@ -16,7 +17,8 @@ class ButtonData {
 }
 
 
-class DashboardScreen extends StatelessWidget {
+
+class DashboardButtons extends StatelessWidget {
 
   final List<ButtonData> buttons = [
     ButtonData(label: "Github", url: githubURL, asset: Assets.github),
@@ -24,16 +26,14 @@ class DashboardScreen extends StatelessWidget {
     ButtonData(label: "Play Console", url: playConsoleURL, asset: Assets.playConsole),
     ButtonData(label: "AdMob", url: adMobURL, asset: Assets.admob),
   ];
-  
-
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: buttons.map((btn) =>
+      children: buttons.map((b) =>
         Expanded(flex: 1, child: Padding(
           padding: EdgeInsets.only(right: 10),
-          child: DashboardButton(btn),
+          child: _DashboardButton(data: b),
         ))
       ).toList()
     );
@@ -41,17 +41,15 @@ class DashboardScreen extends StatelessWidget {
 }
 
 
+class _DashboardButton extends StatelessWidget {
 
-class DashboardButton extends StatelessWidget {
+  final ButtonData data;
 
-  final ButtonData buttonData;
-
-  DashboardButton(this.buttonData);
+  _DashboardButton({@required this.data});
 
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
-      
       focusElevation: 0,
       disabledElevation: 0,
       highlightElevation: 0,
@@ -65,17 +63,15 @@ class DashboardButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Image.asset(
-            buttonData.asset,
+            data.asset,
             height: 24,
           ),
           SizedBox(width: 10),
-          Text(buttonData.label)
+          Text(data.label)
         ],
       ), 
-      onPressed: () => launch(buttonData.url),
+      onPressed: () => launch(data.url),
 
     );
   }
 }
-
-

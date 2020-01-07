@@ -18,19 +18,23 @@ class QuestionsProvider extends ChangeNotifier {
 
   QuestionsProvider() {
     supportedLanguage = [Language("fr"), Language("en")];
+    themes = [];
+    questions = [];
     currentSelectedLanguage = supportedLanguage.first;
   }
   
 
   Future<void> addSupportedLanguage(Language l) async {
     supportedLanguage.add(l);
-    await Future.delayed(const Duration(seconds: 2), (){print("ok");});
+    await Future.delayed(const Duration(seconds: 2), (){print("supported language added (debug)");});
     notifyListeners();
   }
 
 
-  addTheme() {
-
+  Future<void> addTheme(QuizTheme t) async {
+    themes.add(t);
+    await Future.delayed(const Duration(seconds: 2), (){print("theme added (debug)");});
+    notifyListeners();
   }
 
   updateTheme() {

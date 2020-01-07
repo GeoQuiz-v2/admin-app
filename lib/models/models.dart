@@ -12,10 +12,9 @@ class QuizTheme {
   String rawSVG;
   String title;
   int color;
-  ResourceType entitledType;
   String entitled;
 
-  QuizTheme({@required this.rawSVG, @required this.title, @required this.color, @required this.entitled, @required this.entitledType});
+  QuizTheme({@required this.rawSVG, @required this.title, @required this.color, @required this.entitled});
   
 }
 

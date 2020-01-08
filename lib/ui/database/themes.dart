@@ -5,6 +5,7 @@ import 'package:geoquizadmin/models/models.dart';
 import 'package:geoquizadmin/models/questions_provider.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
+import 'package:geoquizadmin/ui/widget/color_picker.dart';
 import 'package:geoquizadmin/ui/widget/form_dialog.dart';
 import 'package:geoquizadmin/ui/widget/subtitle.dart';
 import 'package:geoquizadmin/ui/widget/utils.dart';
@@ -14,16 +15,20 @@ class ThemeListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<QuestionsProvider>(
-      builder: (context, provider, _) => 
-        Column(
-          children: <Widget>[
-            SubTitle("Themes"),
-            ThemeItem(),
-            if (provider.themes != null)
-              ...provider.themes.map((t) => ThemeItem(theme: t)).toList()
-          ],
+    return Column(
+      children: <Widget>[
+        SubTitle("Themes"),
+        ThemeItem(),
+        Consumer<QuestionsProvider>(
+          builder: (context, provider, _) => 
+            provider.themes == null 
+            ? Container()
+            : ListView(
+              shrinkWrap: true,
+              children: provider.themes.map((t) => ThemeItem(theme: t)).toList(),
+            )
         ),
+      ],
     );
   }
 }
@@ -34,88 +39,97 @@ class ThemeItem extends StatefulWidget {
   final QuizTheme theme;
 
   ThemeItem({Key key, this.theme}) : super(key: key);
+  
 
   @override
   _ThemeItemState createState() => _ThemeItemState();
+  
 }
 
 class _ThemeItemState extends State<ThemeItem> {
 
-  @override
-  void initState() {
-    super.initState();
-    _titleController.text = widget.theme?.title;
-    _svgController.text = widget.theme?.rawSVG;
-    _entitledController.text = widget.theme?.entitled;
-  }
 
-  final GlobalKey<FormState> _formKey = GlobalKey();
+  GlobalKey<FormState> _formKey;
 
-  final TextEditingController _svgController = TextEditingController();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _entitledController = TextEditingController();
+  TextEditingController _svgController;
+  TextEditingController _titleController;
+  TextEditingController _entitledController;
+  TextEditingController _colorController;
 
   bool _inProgress = false;
 
   set inProgress(b) => setState(() => _inProgress = b);
   get inProgress => _inProgress;
+  
 
   @override
   Widget build(BuildContext context) {
+    // following init in build because of bug with text field and state management
+    // strange bug (cause of Flutter web beta ??)
+    _formKey = GlobalKey();
+    _svgController = TextEditingController();
+    _titleController = TextEditingController();
+    _entitledController = TextEditingController();
+    _colorController = TextEditingController();
+    _titleController.text = widget.theme?.title;
+    _svgController.text = widget.theme?.rawSVG;
+    _entitledController.text = widget.theme?.entitled;
+    _colorController.text = widget.theme?.color?.toString();
+
     return Builder(
         builder: (context) => Form(
         key: _formKey,
-        child: Column(
-          children: [
-            
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: AppColors.divider))
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: AppColors.divider))
+          ),
+          child: Row(
+            children: <Widget>[
+
+              TextFieldDialog(
+                controller: _svgController,
+                icon: Icons.image,
+                label: "SVG data",
+                onSubmit: null,
+                title: "Add SVG icon data",
+                customValidator:basicValidator,
               ),
-              child: Row(
-                children: <Widget>[
-                  TextFieldDialog(
-                    icon: Icons.image, 
-                    title: "Theme svg icon",
-                    label: "The icon svg source",
-                    controller: _svgController,
-                    onSubmit: null,
-                    customValidator: (value) => value.isEmpty ? "Invalid input" : null,
-                  ),
 
-                  SizedBox(width: Values.normalSpacing,),
+              SizedBox(width: Values.normalSpacing,),
 
-                  Expanded(
-                    flex: 1,
-                    child: TextFormField(
-                      controller: _titleController,
-                      decoration: InputDecoration.collapsed(hintText: "Title"),
-                      validator: (value) => value.isEmpty ? "Invalid" : null,
-                    )
-                  ),
+              Expanded(
+                flex: 1,
+                child: TextFormField(
+                  controller: _titleController,
+                  decoration: InputDecoration.collapsed(hintText: "Title"),
+                  validator: basicValidator,
+                )
+              ),
 
-                  SizedBox(width: Values.normalSpacing,),
+              SizedBox(width: Values.normalSpacing,),
 
-                  Expanded(
-                    flex: 2,
-                    child: TextFormField(
-                      controller: _entitledController,
-                      decoration: InputDecoration.collapsed(hintText: "Entitled"),
-                      validator: (value) => value.isEmpty ? "Invalid" : null,
-                    ),
-                  ),
+              ColorPicker(controller: _colorController, color: widget.theme?.color),
 
-                  SizedBox(width: Values.normalSpacing,),
-                  
-                  ...getActionWidgets(context),
+              SizedBox(width: Values.normalSpacing,),
 
-                ],
-              )
-            ),
-          ]
-        )
+              Expanded(
+                flex: 2,
+                child: TextFormField(
+                  controller: _entitledController,
+                  decoration: InputDecoration.collapsed(hintText: "Entitled"),
+                  validator: basicValidator,
+                ),
+              ),
+
+              SizedBox(width: Values.normalSpacing,),
+              
+              ...getActionWidgets(context),
+
+            ],
+          )
+        ),
       ),
     );
   }
@@ -181,7 +195,7 @@ class _ThemeItemState extends State<ThemeItem> {
       id: widget.theme?.id,
       title: _titleController.text,
       entitled: _entitledController.text,
-      color: null,
+      color: int.parse(_colorController.text),
       rawSVG: _svgController.text,
     );
   }

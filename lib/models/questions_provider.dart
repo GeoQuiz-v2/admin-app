@@ -33,11 +33,12 @@ class QuestionsProvider extends ChangeNotifier {
 
 
   init() {
-    firestore.collection(collectionThemes).onSnapshot.listen((querySnap) {
-      themes = [];
+    firestore.collection(collectionThemes).onSnapshot.listen((querySnap) async {
+      List<QuizTheme> _themes = [];
       for (fs.DocumentSnapshot docSnap in querySnap.docs) {
-        themes.add(QuizTheme.fromJSON(id: docSnap.id, data: docSnap.data()));
+        _themes.add(QuizTheme.fromJSON(id: docSnap.id, data: docSnap.data()));
       }
+      themes = _themes;
       notifyListeners();
     });
   }

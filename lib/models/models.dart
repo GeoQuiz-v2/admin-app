@@ -9,12 +9,27 @@ class Language {
 
 
 class QuizTheme {
+  String id;
   String rawSVG;
   String title;
   int color;
   String entitled;
 
-  QuizTheme({@required this.rawSVG, @required this.title, @required this.color, @required this.entitled});
+  QuizTheme({this.id, @required this.rawSVG, @required this.title, @required this.color, @required this.entitled});
+
+  QuizTheme.fromJSON({@required this.id, @required Map<String, Object> data}) {
+    this.rawSVG = data["icon"];
+    this.title = data["title"];
+    this.color = data["color"];
+    this.entitled = data["entitled"];
+  }
+
+  Map<String, Object> toJSON() => {
+    "icon": rawSVG,
+    "title": title,
+    "color": color,
+    "entitled": entitled,
+  };
   
 }
 

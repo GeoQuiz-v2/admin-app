@@ -1,8 +1,15 @@
 
+import 'package:firebase/firebase.dart' as fb;
+import 'package:firebase/firestore.dart' as fs;
 import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/models/models.dart';
 
 class QuestionsProvider extends ChangeNotifier {
+
+  fs.Firestore firestore = fb.firestore();
+
+  final collectionThemes = "themes";
+  final collectionQuestions = "questions";
 
   List<Language> supportedLanguage;
   List<QuizTheme> themes;
@@ -18,9 +25,21 @@ class QuestionsProvider extends ChangeNotifier {
 
   QuestionsProvider() {
     supportedLanguage = [Language("fr"), Language("en")];
-    themes = [];
+
     questions = [];
     currentSelectedLanguage = supportedLanguage.first;
+    init();
+  }
+
+
+  init() {
+    firestore.collection(collectionThemes).onSnapshot.listen((querySnap) {
+      themes = [];
+      for (fs.DocumentSnapshot docSnap in querySnap.docs) {
+        themes.add(QuizTheme.fromJSON(id: docSnap.id, data: docSnap.data()));
+      }
+      notifyListeners();
+    });
   }
   
 
@@ -32,17 +51,15 @@ class QuestionsProvider extends ChangeNotifier {
 
 
   Future<void> addTheme(QuizTheme t) async {
-    themes.add(t);
-    await Future.delayed(const Duration(seconds: 2), (){print("theme added (debug)");});
-    notifyListeners();
+    await firestore.collection(collectionThemes).add(t.toJSON());
   }
 
-  updateTheme() {
-
+  Future<void> updateTheme(QuizTheme t) async {
+    await firestore.collection(collectionThemes).doc(t.id).update(data: t.toJSON());
   }
 
-  removeTheme() {
-
+  Future<void> removeTheme(QuizTheme t) async {
+    await firestore.collection(collectionThemes).doc(t.id).delete();
   }
 
   addQuestion() {

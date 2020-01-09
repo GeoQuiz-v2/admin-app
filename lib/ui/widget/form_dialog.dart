@@ -32,7 +32,6 @@ class TextFieldDialog extends FormField<String> {
           },
         ),
         validator: (_) {
-          print(controller.text);
           if (controller != null && customValidator != null) 
             return customValidator(controller.text);
           return null;

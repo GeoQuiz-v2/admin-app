@@ -36,6 +36,9 @@ class ColorTransformation {
 
 
 class SnackBarFactory {
+
+  SnackBarFactory._();
+  
   static showSuccessSnackbar({@required context, @required message}) {
     Scaffold.of(context).showSnackBar(
       SnackBar(

@@ -11,9 +11,9 @@ class QuestionsProvider extends ChangeNotifier {
   final collectionThemes = "themes";
   final collectionQuestions = "questions";
 
-  List<Language> supportedLanguage;
-  List<QuizTheme> themes;
-  List<Question> questions;
+  List<Language> supportedLanguage = [];
+  List<QuizTheme> themes = [];
+  List<Question> questions = [];
 
   Language _currentSelectedLanguage;
 
@@ -25,8 +25,6 @@ class QuestionsProvider extends ChangeNotifier {
 
   QuestionsProvider() {
     supportedLanguage = [Language("fr"), Language("en")];
-
-    questions = [];
     currentSelectedLanguage = supportedLanguage.first;
     init();
   }
@@ -34,11 +32,22 @@ class QuestionsProvider extends ChangeNotifier {
 
   init() {
     firestore.collection(collectionThemes).onSnapshot.listen((querySnap) async {
-      List<QuizTheme> _themes = [];
+      themes = [];
       for (fs.DocumentSnapshot docSnap in querySnap.docs) {
-        _themes.add(QuizTheme.fromJSON(id: docSnap.id, data: docSnap.data()));
+        try {
+          themes.add(QuizTheme.fromJSON(id: docSnap.id, data: docSnap.data()));
+        }catch(e) {print(e.toString());}
       }
-      themes = _themes;
+      notifyListeners();
+    });
+
+    firestore.collection(collectionQuestions).onSnapshot.listen((querySnap) async {
+      questions = [];
+      for (fs.DocumentSnapshot docSnap in querySnap.docs) {
+        try {
+          questions.add(Question.fromJSON(id: docSnap.id, data: docSnap.data()));
+        }catch(e) {print(e.toString());}
+      }
       notifyListeners();
     });
   }
@@ -64,15 +73,15 @@ class QuestionsProvider extends ChangeNotifier {
   }
 
   Future<void> addQuestion(Question q) async {
-
+    await firestore.collection(collectionQuestions).add(q.toJSON());
   }
 
   Future<void> updateQuestion(Question q) async {
-
+    await firestore.collection(collectionQuestions).doc(q.id).update(data: q.toJSON());
   }
 
   Future<void> removeQuestion(Question q) async {
-
+    await firestore.collection(collectionQuestions).doc(q.id).delete();
   }
 
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/models/models.dart';
@@ -28,6 +30,14 @@ class QuestionListWidget extends StatelessWidget {
           )
         ),
         QuestionItem(),
+        Consumer<QuestionsProvider>(
+          builder: (context, provider, _) => ListView.builder(
+            shrinkWrap: true,
+            itemCount: provider.questions == null ? 0 : min(provider.questions.length, 10),
+            physics: ClampingScrollPhysics(),
+            itemBuilder: (context, position) => QuestionItem(question: provider.questions[position],),
+          ),
+        )
       ],
     );
   }
@@ -52,64 +62,79 @@ class _QuestionItemState extends State<QuestionItem> {
 
   final _formKey = new GlobalKey<FormState>();
 
-  final answerControllers = [TextEditingController(), TextEditingController(), TextEditingController(), TextEditingController()];
-  final entitledController = TextEditingController();
-  final entitledTypeController = TypePickerController();
-  final answerTypesController = TypePickerController();
-  final difficultyController = DifficultyPickerController();
+  var entitledController = TextEditingController();
+  var entitledTypeController = TypePickerController();
+  var answerControllers = List<TextEditingController>();
+  var answerTypesController = TypePickerController();
+  var difficultyController = DifficultyPickerController();
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: AppColors.divider))
-        ),
-        child: Row(
-          children: <Widget>[
-            TypePicker(
-              types: [Types.imageType, Types.textType],
-              controller: entitledTypeController,
-            ),
+    entitledController.text = widget.question?.entitled;
+    entitledTypeController.value = widget.question?.entitledType;
+    answerTypesController.value = widget.question?.answersType;
+    difficultyController.value = widget.question?.difficulty;
+    answerControllers = [];
+    widget.question?.answers?.forEach((q) => answerControllers.add(TextEditingController(text: q)));
+    while (answerControllers.length < 4)
+      answerControllers.add(TextEditingController());
 
-            Expanded(
-              flex: 2,
-              child: TextFormField(
-                controller: entitledController,
-                decoration: InputDecoration.collapsed(hintText: "Entitled"),
-                validator: basicValidator,
+    return Builder(
+      builder: (context) => Form(
+        key: _formKey,
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: AppColors.divider))
+          ),
+          child: Row(
+            children: <Widget>[
+              TypePicker(
+                types: [Types.imageType, Types.textType],
+                controller: entitledTypeController,
               ),
-            ),
 
-            SizedBox(child: SizedBox(width: Values.normalSpacing,),),
-
-            TypePicker(
-              types: [Types.imageType, Types.textType, Types.locationType],
-              controller: answerTypesController,
-            ),
-
-            SizedBox(child: SizedBox(width: Values.normalSpacing,),),
-
-            ...List<int>.generate(answerControllers.length, (i) => i).map((i) => 
               Expanded(
                 flex: 2,
                 child: TextFormField(
-                  controller: answerControllers.elementAt(i),
-                  decoration: InputDecoration.collapsed(hintText: i == 0 ? "Correct answer" : ("Wrong answer #" + i.toString())),
+                  controller: entitledController,
+                  decoration: InputDecoration.collapsed(hintText: "Entitled"),
                   validator: basicValidator,
                 ),
-              )
-            ).toList(),
+              ),
 
-            DifficultyPicker(controller: difficultyController),
+              SizedBox(child: SizedBox(width: Values.normalSpacing,),),
 
-            ...getActionWidgets(context),
-          ],
+              TypePicker(
+                types: [Types.imageType, Types.textType, Types.locationType],
+                controller: answerTypesController,
+              ),
+
+              SizedBox(child: SizedBox(width: Values.normalSpacing,),),
+              
+              Expanded(
+                flex: 7,
+                child: Wrap(
+                  children: List<int>.generate(answerControllers.length, (i) => i).map((i) => 
+                      SizedBox(
+                        width: 200,
+                        child: TextFormField(
+                          controller: answerControllers.elementAt(i),
+                          decoration: InputDecoration.collapsed(hintText: i == 0 ? "Correct answer" : ("Wrong answer #" + i.toString())),
+                          validator: basicValidator,
+                        ),
+                      ),
+                  ).toList(),
+                )
+              ),
+              DifficultyPicker(controller: difficultyController),
+
+              ...getActionWidgets(context),
+            ],
+          ),
+
         ),
-
       ),
     );
   }
@@ -144,27 +169,38 @@ class _QuestionItemState extends State<QuestionItem> {
 
   onAddQuestion(context) {
     if (_formKey.currentState.validate()) {
-      handleProviderFunction(Provider.of<QuestionsProvider>(context).addQuestion, null);
+      handleProviderFunction(context, Provider.of<QuestionsProvider>(context, listen: false).addQuestion, getQuestionFromForm());
     }
   }
 
   onUpdateQuestion(context) {
     if (_formKey.currentState.validate()) {
-      handleProviderFunction(Provider.of<QuestionsProvider>(context).updateQuestion, null);
+      handleProviderFunction(context, Provider.of<QuestionsProvider>(context, listen: false).updateQuestion, getQuestionFromForm());
     }
   }
 
 
   onDeleteQuestion(context) {
-    handleProviderFunction(Provider.of<QuestionsProvider>(context).removeQuestion, null);
+    handleProviderFunction(context, Provider.of<QuestionsProvider>(context, listen: false).removeQuestion, widget.question);
+  }
+
+  Question getQuestionFromForm() {
+    return Question(
+      id: widget.question?.id,
+      entitled: entitledController.text,
+      entitledType: entitledTypeController.value,
+      answers: answerControllers.map((c) => c.text).toList(),
+      answersType: answerTypesController.value,
+      difficulty: difficultyController.value
+    );
   }
 
 
-  handleProviderFunction(Future Function(Question) function, Question q) {
+  handleProviderFunction(context, Future Function(Question) function, Question q) {
     inProgress = true;
     function(q)
-        .then((_) => null)
-        .catchError((e) => SnackBarFactory())
+        .then((_) => SnackBarFactory.showSuccessSnackbar(context: context, message: "Success."))
+        .catchError((e) => SnackBarFactory.showErrorSnabar(context: context, message: e.toString()))
         .whenComplete(() => inProgress = false);
   }
 }

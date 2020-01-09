@@ -1,22 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geoquizadmin/models/models.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/ui/widget/icon_button.dart';
 
 
-class Type {
-  String label;
-  IconData icon;
-
-  Type({this.label, this.icon});
-}
-
-
-class Types {
-  static var textType = Type(icon: Icons.title, label: "text");
-  static var imageType = Type(icon: Icons.image, label: "image");
-  static var locationType = Type(icon: Icons.location_on, label: "location");
-}
 
 
 class TypePicker extends FormField<Type> {
@@ -95,6 +83,12 @@ class _TypePickerState extends FormFieldState<Type> {
   set(Type type) {
     widget.controller.value = type;
     this.setValue(type);
+  }
+
+  @override
+  void reset() {
+    super.reset();
+    setState(() => widget.controller.value = null);
   }
 }
 

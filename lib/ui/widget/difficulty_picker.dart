@@ -114,6 +114,12 @@ class _DifficultyPickerState extends FormFieldState<int> {
       widget.controller.value--;
     this.setValue(widget.controller.value);
   }
+
+  @override
+  void reset() {
+    super.reset();
+    setState(() => widget.controller.value = null);
+  }
 }
 
 

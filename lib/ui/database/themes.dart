@@ -50,12 +50,12 @@ class ThemeItem extends StatefulWidget {
 class _ThemeItemState extends State<ThemeItem> {
 
 
-  GlobalKey<FormState> _formKey;
+  final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _svgController;
-  TextEditingController _titleController;
-  TextEditingController _entitledController;
-  TextEditingController _colorController;
+  final _svgController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _entitledController = TextEditingController();
+  final _colorController = TextEditingController();
 
   bool _inProgress = false;
 
@@ -67,11 +67,6 @@ class _ThemeItemState extends State<ThemeItem> {
   Widget build(BuildContext context) {
     // following init in build because of bug with text field and state management
     // strange bug (cause of Flutter web beta ??)
-    _formKey = GlobalKey();
-    _svgController = TextEditingController();
-    _titleController = TextEditingController();
-    _entitledController = TextEditingController();
-    _colorController = TextEditingController();
     _titleController.text = widget.theme?.title;
     _svgController.text = widget.theme?.rawSVG;
     _entitledController.text = widget.theme?.entitled;

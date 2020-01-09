@@ -1,6 +1,9 @@
 import 'package:flutter/painting.dart';
+import 'package:geoquizadmin/res/colors.dart';
 
 class Values {
+  static final screenMargin = 20.0;
+  
   static final titleSize = 18.0;
   static final pageTitleSize = 30.0;
   static final pageSubtitle = 17.0;
@@ -14,4 +17,5 @@ class Values {
 
   static final blockSpacing = 30.0;
   static final normalSpacing = 10.0;
+
 }

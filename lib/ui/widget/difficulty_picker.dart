@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/res/colors.dart';
+import 'package:geoquizadmin/res/values.dart';
 
 class DifficultyPicker extends FormField<int> {
   static final min = 1;
@@ -55,6 +56,7 @@ class _DifficultyPickerWidget extends StatefulWidget {
 class _DifficultyPickerWidgetState extends State<_DifficultyPickerWidget> {
 
   int get difficulty => widget.controller.value;
+  final iconSize = 20.0;
 
   @override
   Widget build(BuildContext context) {
@@ -62,18 +64,20 @@ class _DifficultyPickerWidgetState extends State<_DifficultyPickerWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 5,
           children: [
             InkWell(
-              child: Icon(Icons.remove), 
+              child: Icon(Icons.remove, size: iconSize, color: AppColors.textColorLight,), 
               onTap: () {
                 if (difficulty != null && difficulty > widget.min) {
                   setState(() => widget.onDecrease());
                 }
               }
             ),
-            Text(difficulty?.toString()??"?"),
+            Text(difficulty?.toString()??"?", style: TextStyle(fontSize: 16, color: difficulty == null ? AppColors.textColorLight : AppColors.textColor),),
             InkWell(
-              child: Icon(Icons.add), 
+              child: Icon(Icons.add, size: iconSize, color: AppColors.textColorLight,), 
               onTap: () {
                 if (difficulty == null || difficulty < widget.max) {
                   setState(() => widget.onIncrease());
@@ -83,7 +87,7 @@ class _DifficultyPickerWidgetState extends State<_DifficultyPickerWidget> {
           ]
         ),
         if (widget.state.hasError)
-          Text("Invalid", style: TextStyle(color: AppColors.error, fontSize: 12),)
+          Text("Invalid", style: Theme.of(context).inputDecorationTheme.errorStyle)
       ],
     );
   }

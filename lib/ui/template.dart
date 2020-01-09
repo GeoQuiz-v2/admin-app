@@ -55,7 +55,8 @@ class _TemplateState extends State<Template> {
       appBar: MainAppBar(),
       body: Center(
         child: Container(
-              constraints: BoxConstraints(maxWidth: 1024),
+              // constraints: BoxConstraints(maxWidth: 1024),
+              padding: EdgeInsets.all(Values.screenMargin),
               child: ScrollConfiguration(
                 behavior: BasicScrollWithoutGlow(),
                 child: ListView(

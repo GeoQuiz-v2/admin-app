@@ -9,6 +9,6 @@ class AppColors {
 
   static Color divider = Color(0xFFC9C9C9);
   
-  static Color textColor = Color(0xFF);
+  static Color textColor = Color(0xFF000000);
   static Color textColorLight = Color(0x88000000);
 }

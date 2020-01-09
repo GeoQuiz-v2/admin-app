@@ -14,7 +14,9 @@ class SubTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: first ? 0 : Values.blockSpacing, bottom: Values.normalSpacing),
-      child: Row(
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        runAlignment: WrapAlignment.start,
         children: <Widget>[
           Text(
             text.toUpperCase(),

@@ -16,6 +16,7 @@ class ThemeListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SubTitle("Themes"),
         ThemeItem(),

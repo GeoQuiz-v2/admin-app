@@ -63,15 +63,15 @@ class QuestionsProvider extends ChangeNotifier {
     await firestore.collection(collectionThemes).doc(t.id).delete();
   }
 
-  addQuestion() {
+  Future<void> addQuestion(Question q) async {
 
   }
 
-  updateQuestion() {
+  Future<void> updateQuestion(Question q) async {
 
   }
 
-  removeQuestion() {
+  Future<void> removeQuestion(Question q) async {
 
   }
 

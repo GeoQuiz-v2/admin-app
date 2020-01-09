@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/models/models.dart';
+import 'package:geoquizadmin/models/questions_provider.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/widget/difficulty_picker.dart';
 import 'package:geoquizadmin/ui/widget/subtitle.dart';
+import 'package:geoquizadmin/ui/widget/type_picker.dart';
 import 'package:geoquizadmin/ui/widget/utils.dart';
+import 'package:provider/provider.dart';
 
 
 
@@ -13,6 +16,7 @@ class QuestionListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SubTitle(
           "Questions", 
@@ -41,11 +45,18 @@ class QuestionItem extends StatefulWidget {
 
 class _QuestionItemState extends State<QuestionItem> {
 
-  bool inProgress = false;
+  bool _inProgress = false;
+
+  set inProgress(b) => setState(() => _inProgress = b);
+  get inProgress => _inProgress;
 
   final _formKey = new GlobalKey<FormState>();
 
   final answerControllers = [TextEditingController(), TextEditingController(), TextEditingController(), TextEditingController()];
+  final entitledController = TextEditingController();
+  final entitledTypeController = TypePickerController();
+  final answerTypesController = TypePickerController();
+  final difficultyController = DifficultyPickerController();
 
   @override
   Widget build(BuildContext context) {
@@ -59,23 +70,25 @@ class _QuestionItemState extends State<QuestionItem> {
         ),
         child: Row(
           children: <Widget>[
+            TypePicker(
+              types: [Types.imageType, Types.textType],
+              controller: entitledTypeController,
+            ),
+
             Expanded(
               flex: 2,
-              child: Wrap(children: <Widget>[
-                Icon(Icons.title),
-                Icon(Icons.image),
-              ],),
+              child: TextFormField(
+                controller: entitledController,
+                decoration: InputDecoration.collapsed(hintText: "Entitled"),
+                validator: basicValidator,
+              ),
             ),
 
             SizedBox(child: SizedBox(width: Values.normalSpacing,),),
 
-            Expanded(
-              flex: 1,
-              child: Wrap(children: <Widget>[
-                Icon(Icons.title),
-                Icon(Icons.image),
-                Icon(Icons.location_on),
-              ],),
+            TypePicker(
+              types: [Types.imageType, Types.textType, Types.locationType],
+              controller: answerTypesController,
             ),
 
             SizedBox(child: SizedBox(width: Values.normalSpacing,),),
@@ -91,7 +104,7 @@ class _QuestionItemState extends State<QuestionItem> {
               )
             ).toList(),
 
-            DifficultyPicker(controller: DifficultyPickerController(),),
+            DifficultyPicker(controller: difficultyController),
 
             ...getActionWidgets(context),
           ],
@@ -130,11 +143,29 @@ class _QuestionItemState extends State<QuestionItem> {
   }
 
   onAddQuestion(context) {
-    print(_formKey.currentState.validate());
+    if (_formKey.currentState.validate()) {
+      handleProviderFunction(Provider.of<QuestionsProvider>(context).addQuestion, null);
+    }
   }
 
-  onDeleteQuestion(context) {}
+  onUpdateQuestion(context) {
+    if (_formKey.currentState.validate()) {
+      handleProviderFunction(Provider.of<QuestionsProvider>(context).updateQuestion, null);
+    }
+  }
 
-  onUpdateQuestion(context) {}
+
+  onDeleteQuestion(context) {
+    handleProviderFunction(Provider.of<QuestionsProvider>(context).removeQuestion, null);
+  }
+
+
+  handleProviderFunction(Future Function(Question) function, Question q) {
+    inProgress = true;
+    function(q)
+        .then((_) => null)
+        .catchError((e) => SnackBarFactory())
+        .whenComplete(() => inProgress = false);
+  }
 }
 

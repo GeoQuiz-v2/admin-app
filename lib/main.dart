@@ -65,7 +65,8 @@ class GeoQuizApp extends StatelessWidget {
         textTheme: TextTheme(
           title: TextStyle(fontSize: Values.titleSize, color: AppColors.primary),
           subtitle: TextStyle(fontSize: Values.pageTitleSize, fontWeight: Values.weightBlack),
-          headline: TextStyle(fontSize: Values.dialogTitleSize, fontWeight: Values.weightBold)
+          headline: TextStyle(fontSize: Values.dialogTitleSize, fontWeight: Values.weightBold),
+          body1: TextStyle(fontSize: 16)
         ),
         inputDecorationTheme: InputDecorationTheme(
           errorStyle: TextStyle(fontSize: 12, color: AppColors.error)

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/res/colors.dart';
+import 'package:geoquizadmin/ui/widget/icon_button.dart';
 
 
 class DifficultyPicker extends FormField<int> {
@@ -65,20 +66,19 @@ class _DifficultyPickerWidgetState extends State<_DifficultyPickerWidget> {
       children: <Widget>[
         Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 5,
           children: [
-            InkWell(
-              child: Icon(Icons.remove, size: iconSize, color: AppColors.textColorLight,), 
-              onTap: () {
+            RoundedIconButton(
+              icon: Icon(Icons.remove, size: iconSize, color: AppColors.textColorLight,), 
+              onPressed: () {
                 if (difficulty != null && difficulty > widget.min) {
                   setState(() => widget.onDecrease());
                 }
               }
             ),
-            Text(difficulty?.toString()??"?", style: TextStyle(fontSize: 16, color: difficulty == null ? AppColors.textColorLight : AppColors.textColor),),
-            InkWell(
-              child: Icon(Icons.add, size: iconSize, color: AppColors.textColorLight,), 
-              onTap: () {
+            Text(difficulty?.toString()??"?", style: TextStyle(color: difficulty == null ? AppColors.textColorLight : AppColors.textColor),),
+            RoundedIconButton(
+              icon: Icon(Icons.add, size: iconSize, color: AppColors.textColorLight,), 
+              onPressed: () {
                 if (difficulty == null || difficulty < widget.max) {
                   setState(() => widget.onIncrease());
                 }

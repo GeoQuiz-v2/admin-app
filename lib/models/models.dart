@@ -44,6 +44,7 @@ class QuizTheme extends Model {
 }
 
 class Question extends Model{
+  String themeId;
   Type entitledType;
   String entitled;
   Type answersType;
@@ -51,6 +52,7 @@ class Question extends Model{
   int difficulty;
 
   bool get incorrectQuestionFormat => 
+    themeId == null ||
     entitledType == null || 
     entitled == null ||
     answersType == null || 
@@ -59,10 +61,11 @@ class Question extends Model{
     difficulty == null;
     
 
-  Question({String id, @required this.entitledType, @required this.entitled, @required this.answers, @required this.answersType, @required this.difficulty})
+  Question({String id, @required this.themeId, @required this.entitledType, @required this.entitled, @required this.answers, @required this.answersType, @required this.difficulty})
   : super(id: id);
 
   Question.fromJSON({String id, @required Map<String, Object> data}) : super(id: id) {
+    this.themeId = data["theme"] as String;
     this.entitled = data["entitled"] as String;
     this.entitledType = Types.fromLabel(data["entitled_type"]);
     this.answers = (data["answers"] as List<dynamic>).cast<String>();
@@ -72,6 +75,7 @@ class Question extends Model{
 
   @override
   Map<String, Object> toJSON() => {
+    "theme": themeId,
     "entitled": entitled,
     "entitled_type": entitledType.label,
     "answers": answers,

@@ -30,9 +30,16 @@ class _QuestionListWidgetState extends State<QuestionListWidget> {
   Widget build(BuildContext context) {
     return Consumer<QuestionsProvider>(
       builder: (context, provider, child) {
-        List<Question> questionWithProblems = provider.questions.where((q) => q.incorrectQuestionFormat).toList();
-        int problems = questionWithProblems.length;
-        List<Question> questions = onlyQuestionsWithProblems ? questionWithProblems : provider.questions;
+
+        String currentSelectedThemeId = provider.currentSelectedTheme?.id;
+        int problems = 0;
+        List<Question> questions = [];
+        if (currentSelectedThemeId != null) {
+          List<Question> allQuestions = provider.questions.where((q) => q.themeId == currentSelectedThemeId ).toList();
+          List<Question> questionWithProblems = allQuestions.where((q) => q.incorrectQuestionFormat).toList();
+          problems = questionWithProblems.length;
+          questions = onlyQuestionsWithProblems ? questionWithProblems : allQuestions;
+        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -46,13 +53,16 @@ class _QuestionListWidgetState extends State<QuestionListWidget> {
                 color: onlyQuestionsWithProblems ? AppColors.error : Colors.transparent,
               )
             ),
-            child,
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: questions == null ? 0 : min(questions.length, 10),
-              physics: ClampingScrollPhysics(),
-              itemBuilder: (context, position) => QuestionItem(question: questions[position],),
-            ),
+            if (currentSelectedThemeId != null)
+              child,
+            currentSelectedThemeId == null 
+            ? Text("Select a theme to view questions.", style: TextStyle(color: AppColors.textColorLight))
+            : ListView.builder(
+                shrinkWrap: true,
+                itemCount: questions == null ? 0 : min(questions.length, 10),
+                physics: ClampingScrollPhysics(),
+                itemBuilder: (context, position) => QuestionItem(question: questions[position],),
+              ),
             SizedBox(height: Values.normalSpacing),
             Row(
               children: List.generate((questions.length / questionsPerPage).ceil(), (i) => i + 1).map((i) => 
@@ -102,6 +112,7 @@ class QuestionItem extends StatefulWidget {
 
 class _QuestionItemState extends State<QuestionItem> {
 
+  final minumumNumberOfQuestions = 4;
   bool _inProgress = false;
 
   set inProgress(b) => setState(() => _inProgress = b);
@@ -115,17 +126,22 @@ class _QuestionItemState extends State<QuestionItem> {
   TypePickerController answerTypesController;
   DifficultyPickerController difficultyController;
 
+  @override
+  void initState() {
+    super.initState();
+    resetForm();
+  }
 
 
   @override
   Widget build(BuildContext context) {
-    resetForm();
+    // resetForm();
     return Builder(
       builder: (context) => Form(
         key: _formKey,
         child: Container(
           width: double.infinity,
-          padding: EdgeInsets.all(15),
+          padding: EdgeInsets.symmetric(vertical: 5),
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: AppColors.divider))
           ),
@@ -157,7 +173,8 @@ class _QuestionItemState extends State<QuestionItem> {
               Expanded(
                 flex: 7,
                 child: Wrap(
-                  children: List<int>.generate(answerControllers.length, (i) => i).map((i) => 
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [...List<int>.generate(answerControllers.length, (i) => i).map((i) => 
                       SizedBox(
                         width: 200,
                         child: TextFormField(
@@ -166,7 +183,16 @@ class _QuestionItemState extends State<QuestionItem> {
                           validator: basicValidator,
                         ),
                       ),
-                  ).toList(),
+                    ).toList(),
+                    RoundedIconButton(
+                      icon: Icon(Icons.remove, color: AppColors.textColorLight),
+                      onPressed: answerControllers.length <= minumumNumberOfQuestions ? null : () => setState(() => answerControllers.removeLast()),
+                    ),
+                    RoundedIconButton(
+                      icon: Icon(Icons.add, color: AppColors.textColorLight),
+                      onPressed: () => setState(() => answerControllers.add(TextEditingController())),
+                    )
+                  ],
                 )
               ),
               DifficultyPicker(controller: difficultyController),
@@ -202,7 +228,7 @@ class _QuestionItemState extends State<QuestionItem> {
     difficultyController.value = widget.question?.difficulty;
     answerControllers = [];
     widget.question?.answers?.forEach((q) => answerControllers.add(TextEditingController(text: q)));
-    while (answerControllers.length < 4)
+    while (answerControllers.length < minumumNumberOfQuestions)
       answerControllers.add(TextEditingController());
   }
 
@@ -254,6 +280,7 @@ class _QuestionItemState extends State<QuestionItem> {
 
   Question getQuestionFromForm() {
     return Question(
+      themeId: Provider.of<QuestionsProvider>(context, listen: false).currentSelectedTheme.id,
       id: widget.question?.id,
       entitled: entitledController.text,
       entitledType: entitledTypeController.value,

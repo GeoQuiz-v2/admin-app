@@ -15,11 +15,18 @@ class QuestionsProvider extends ChangeNotifier {
   List<QuizTheme> themes = [];
   List<Question> questions = [];
 
+  QuizTheme _currentSelectedTheme;
   Language _currentSelectedLanguage;
 
   Language get currentSelectedLanguage => _currentSelectedLanguage;
   set currentSelectedLanguage(l) {
     _currentSelectedLanguage = l;
+    notifyListeners();
+  }
+
+  QuizTheme get currentSelectedTheme => _currentSelectedTheme;
+  set currentSelectedTheme(t) {
+    _currentSelectedTheme = t;
     notifyListeners();
   }
 

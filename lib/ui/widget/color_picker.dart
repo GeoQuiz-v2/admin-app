@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
+import 'package:tinycolor/tinycolor.dart';
 
 class ColorPicker extends StatefulWidget {
 
@@ -15,61 +16,66 @@ class ColorPicker extends StatefulWidget {
 }
 
 class _ColorPickerState extends State<ColorPicker> {
-
-  Color color;
-  bool invalid = false;
-
+  
   TextEditingController _colorController;
+
 
   @override
   void initState() {
     super.initState();
     _colorController = widget.controller??TextEditingController();
-    if (widget.color != null) {
-      updateColorIfPossible(widget.color.toString());
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Container(
-          width: 24,
-          height: 24,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Values.radius), 
-            color: invalid ? AppColors.error : color??AppColors.textColorLight),
-        ),
-        SizedBox(child: SizedBox(width:Values.normalSpacing)),
-        SizedBox(
-          width: 100,
-          child: TextFormField(
-            controller: _colorController,
-            decoration: InputDecoration.collapsed(hintText: "Color"),
-            validator: (intColor) {
-              updateColorIfPossible(intColor);
-              return invalid || color == null ? "Invalid color" : null;
-            },
-            
-            onChanged: updateColorIfPossible,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Values.radius),
+        color: getBackgroundTextField(),
+      ),
+      padding: EdgeInsets.only(left: 12),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(Values.radius), 
+              color: getColor()??AppColors.textColorLight),
           ),
-        ),
-      ],
+          SizedBox(child: SizedBox(width:Values.normalSpacing)),
+          SizedBox(
+            width: 100,
+            child: TextFormField(
+              controller: _colorController,
+              decoration: InputDecoration.collapsed(hintText: "Color"),
+              style: TextStyle(color: getColor()??AppColors.textColor, fontSize: 14, fontWeight: Values.weightBold),
+              validator: (intColor) => getColor() == null ? "Invalid color" : null,
+              onChanged: (_) => setState(() => null),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  updateColorIfPossible(String intColor) {
+
+  Color getBackgroundTextField() {
+    Color c = getColor();
+    if (c == null || TinyColor(c).getBrightness() < 170.0) {
+      return Colors.transparent;
+    }
+    return Colors.black;
+  }
+
+  Color getColor() {
+    if (widget.controller?.text?.length != 10)
+      return null;
     try {
-      Color c = Color(int.parse(intColor));
-      setState(() {
-        invalid = false;
-        color = c;
-      });
+      Color c = Color(int.parse(widget.controller.text));
+      return c;
     } catch (e) {
-      setState(() {
-        invalid = true;
-      });
+      return null;
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/painting.dart';
 class AppColors {
   
   static Color primary = Color(0xFF7041DA);
+  static Color primaryLight = Color(0xFFEAE4FA);
   static Color onPrimary = Colors.white;
   // static Color secondary = Color(0xFF7041DA);
   static Color error = Color(0xFFE91A4F);

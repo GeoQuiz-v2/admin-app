@@ -50,6 +50,15 @@ class Question extends Model{
   List<String> answers;
   int difficulty;
 
+  bool get incorrectQuestionFormat => 
+    entitledType == null || 
+    entitled == null ||
+    answersType == null || 
+    answers == null || 
+    answers.length < 4 || 
+    difficulty == null;
+    
+
   Question({String id, @required this.entitledType, @required this.entitled, @required this.answers, @required this.answersType, @required this.difficulty})
   : super(id: id);
 

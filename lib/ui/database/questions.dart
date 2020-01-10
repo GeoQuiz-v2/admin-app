@@ -7,6 +7,7 @@ import 'package:geoquizadmin/models/questions_provider.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/widget/difficulty_picker.dart';
+import 'package:geoquizadmin/ui/widget/icon_button.dart';
 import 'package:geoquizadmin/ui/widget/subtitle.dart';
 import 'package:geoquizadmin/ui/widget/type_picker.dart';
 import 'package:geoquizadmin/ui/widget/utils.dart';
@@ -14,32 +15,78 @@ import 'package:provider/provider.dart';
 
 
 
-class QuestionListWidget extends StatelessWidget {
+class QuestionListWidget extends StatefulWidget {
+  @override
+  _QuestionListWidgetState createState() => _QuestionListWidgetState();
+}
+
+class _QuestionListWidgetState extends State<QuestionListWidget> {
+
+  final questionsPerPage = 10;
+  int pageNumber = 1;
+  bool onlyQuestionsWithProblems = false;
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SubTitle(
-          "Questions", 
-          action: FlatButton.icon(
-            textColor: AppColors.error,
-            label: Text("Missing translation"),
-            icon: Icon(Icons.warning, color: AppColors.error,),
-            onPressed: () {},
-          )
-        ),
-        QuestionItem(),
-        Consumer<QuestionsProvider>(
-          builder: (context, provider, _) => ListView.builder(
-            shrinkWrap: true,
-            itemCount: provider.questions == null ? 0 : min(provider.questions.length, 10),
-            physics: ClampingScrollPhysics(),
-            itemBuilder: (context, position) => QuestionItem(question: provider.questions[position],),
-          ),
-        )
-      ],
+    return Consumer<QuestionsProvider>(
+      builder: (context, provider, child) {
+        List<Question> questionWithProblems = provider.questions.where((q) => q.incorrectQuestionFormat).toList();
+        int problems = questionWithProblems.length;
+        List<Question> questions = onlyQuestionsWithProblems ? questionWithProblems : provider.questions;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SubTitle(
+              "Questions", 
+              action: problems == 0 ? null : FlatButton.icon(
+                textColor: onlyQuestionsWithProblems ? AppColors.onError : AppColors.error,
+                label: Text("Problems ($problems)"),
+                icon: Icon(Icons.warning, color: onlyQuestionsWithProblems ? AppColors.onError : AppColors.error),
+                onPressed: onProblemsButtonClick,
+                color: onlyQuestionsWithProblems ? AppColors.error : Colors.transparent,
+              )
+            ),
+            child,
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: questions == null ? 0 : min(questions.length, 10),
+              physics: ClampingScrollPhysics(),
+              itemBuilder: (context, position) => QuestionItem(question: questions[position],),
+            ),
+            SizedBox(height: Values.normalSpacing),
+            Row(
+              children: List.generate((questions.length / questionsPerPage).ceil(), (i) => i + 1).map((i) => 
+                pageNumberWidget(i)
+              ).toList(),
+            )
+          ],
+        );
+      },
+      child: QuestionItem(),
     );
+  }
+
+  Widget pageNumberWidget(int i) => Container(
+    width: 30.0,
+    height: 30.0,
+    decoration: BoxDecoration(
+      color: i == pageNumber ? AppColors.primary : AppColors.surface,
+      borderRadius: BorderRadius.circular(99),
+    ),
+    child: Material(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(99),
+        onTap: () => setState(() => this.pageNumber = i),
+        child: Center(child: Text(i.toString(), style: TextStyle(color: i == pageNumber ? AppColors.onPrimary : AppColors.onSurface),),)
+      ),
+      color: Colors.transparent,
+    ),
+  );
+
+  onProblemsButtonClick() {
+    setState(() {
+      onlyQuestionsWithProblems = !onlyQuestionsWithProblems;
+    });
   }
 }
 
@@ -124,8 +171,15 @@ class _QuestionItemState extends State<QuestionItem> {
               ),
               DifficultyPicker(controller: difficultyController),
 
-              ...getActionWidgets(context)
+              SizedBox(width: 10),
+
+              if (widget.question?.incorrectQuestionFormat == true)
+                RoundedIconButton(
+                  icon: Icon(Icons.warning, color: AppColors.error),
+                  onPressed: () {},
+                ),
               
+              ...getActionWidgets(context)
             ],
           ),
 
@@ -168,16 +222,14 @@ class _QuestionItemState extends State<QuestionItem> {
       )];
 
     return [
-      InkWell(
-        child: Icon(Icons.delete, color: AppColors.error),
-
-        onTap: () => SnackBarFactory.showSuccessSnackbar(context: context, message: "Long click to delete the theme."),
+      RoundedIconButton(
+        icon: Icon(Icons.delete, color: AppColors.error),
+        onPressed: () => SnackBarFactory.showSuccessSnackbar(context: context, message: "Long click to delete the theme."),
         onLongPress: () => onDeleteQuestion(context),
       ),
-      SizedBox(child: SizedBox(width: Values.normalSpacing)),
-      InkWell(
-        child: Icon(Icons.save, color: AppColors.primary),
-        onTap:  () => onUpdateQuestion(context),
+      RoundedIconButton(
+        icon: Icon(Icons.save, color: AppColors.primary),
+        onPressed:  () => onUpdateQuestion(context),
       ),
     ];
   }

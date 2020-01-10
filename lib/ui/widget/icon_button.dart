@@ -6,8 +6,9 @@ class RoundedIconButton extends StatelessWidget {
 
   final Icon icon;
   final Function onPressed;
+  final Function onLongPress;
 
-  RoundedIconButton({@required this.icon, @required this.onPressed});
+  RoundedIconButton({@required this.icon, @required this.onPressed, this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +16,7 @@ class RoundedIconButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(99),      
       child: Padding(padding: EdgeInsets.all(5) ,child: icon),
       onTap: onPressed,
+      onLongPress: onLongPress,
     );
   }
 }

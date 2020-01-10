@@ -7,6 +7,7 @@ import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/widget/color_picker.dart';
 import 'package:geoquizadmin/ui/widget/form_dialog.dart';
+import 'package:geoquizadmin/ui/widget/icon_button.dart';
 import 'package:geoquizadmin/ui/widget/subtitle.dart';
 import 'package:geoquizadmin/ui/widget/utils.dart';
 import 'package:provider/provider.dart';
@@ -144,26 +145,21 @@ class _ThemeItemState extends State<ThemeItem> {
 
   List<Widget> getActionWidgets(context) {
     if (widget.theme == null) {
-      return [ButtonTheme(
-        minWidth: 0,
-        child: FlatButton(
-          child: Text(inProgress ? "Loading..." : "Add"), 
-          textColor: AppColors.primary,
-          onPressed: inProgress ? null : () => onAddTheme(context)
-        ),
+      return [FlatButton(
+        child: Text(inProgress ? "Loading..." : "Add"), 
+        textColor: AppColors.primary,
+        onPressed: inProgress ? null : () => onAddTheme(context)
       )];
     } else {
       return [
-        InkWell(
-          child: Icon(Icons.delete, color: AppColors.error),
-
-          onTap: () => SnackBarFactory.showSuccessSnackbar(context: context, message: "Long click to delete the theme."),
+        RoundedIconButton(
+          icon: Icon(Icons.delete, color: AppColors.error),
+          onPressed: () => SnackBarFactory.showSuccessSnackbar(context: context, message: "Long click to delete the theme."),
           onLongPress: () => onDeleteTheme(context),
         ),
-        SizedBox(child: SizedBox(width: Values.normalSpacing)),
-        InkWell(
-          child: Icon(Icons.save, color: AppColors.primary),
-          onTap:  () => onUpdateTheme(context),
+        RoundedIconButton(
+          icon: Icon(Icons.save, color: AppColors.primary),
+          onPressed:  () => onUpdateTheme(context),
         ),
       ];
     }

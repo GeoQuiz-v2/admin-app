@@ -70,6 +70,10 @@ class GeoQuizApp extends StatelessWidget {
         ),
         inputDecorationTheme: InputDecorationTheme(
           errorStyle: TextStyle(fontSize: 12, color: AppColors.error)
+        ),
+        buttonTheme: ButtonThemeData(                
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Values.radius),),
+          minWidth: 0
         )
       ),
       home: Consumer<AuthenticationNotifier>(

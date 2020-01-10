@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/widget/form_field.dart';
+import 'package:geoquizadmin/ui/widget/icon_button.dart';
 
 
 
@@ -17,9 +18,9 @@ class TextFieldDialog extends FormField<String> {
   TextFieldDialog({@required IconData icon, @required this.title, @required this.label, @required this.onSubmit, this.customValidator, TextEditingController controller}) 
   : super(
       builder: (state) => 
-        InkWell(
-          child: Icon(icon, color: state.hasError ? AppColors.error : AppColors.textColorLight),
-          onTap: () {
+        RoundedIconButton(
+          icon: Icon(icon, color: state.hasError ? AppColors.error : AppColors.textColorLight),
+          onPressed: () {
             showDialog(
               context: state.context,
               builder: (context) => FormDialog(

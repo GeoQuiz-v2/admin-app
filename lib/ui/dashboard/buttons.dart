@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/env.dart';
 import 'package:geoquizadmin/res/assets.dart';
 import 'package:geoquizadmin/res/colors.dart';
-import 'package:geoquizadmin/res/values.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
@@ -49,14 +48,8 @@ class _DashboardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-      focusElevation: 0,
-      disabledElevation: 0,
-      highlightElevation: 0,
-      hoverElevation: 0,
-      elevation: 0, 
+    return FlatButton(
       color: AppColors.surface,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Values.radius)),
       padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -71,7 +64,6 @@ class _DashboardButton extends StatelessWidget {
         ],
       ), 
       onPressed: () => launch(data.url),
-
     );
   }
 }

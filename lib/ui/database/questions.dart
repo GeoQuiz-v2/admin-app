@@ -60,25 +60,19 @@ class _QuestionItemState extends State<QuestionItem> {
   set inProgress(b) => setState(() => _inProgress = b);
   get inProgress => _inProgress;
 
-  final _formKey = new GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
-  var entitledController = TextEditingController();
-  var entitledTypeController = TypePickerController();
-  var answerControllers = List<TextEditingController>();
-  var answerTypesController = TypePickerController();
-  var difficultyController = DifficultyPickerController();
+  TextEditingController entitledController;
+  TypePickerController entitledTypeController;
+  List<TextEditingController> answerControllers;
+  TypePickerController answerTypesController;
+  DifficultyPickerController difficultyController;
+
+
 
   @override
   Widget build(BuildContext context) {
-    entitledController.text = widget.question?.entitled;
-    entitledTypeController.value = widget.question?.entitledType;
-    answerTypesController.value = widget.question?.answersType;
-    difficultyController.value = widget.question?.difficulty;
-    answerControllers = [];
-    widget.question?.answers?.forEach((q) => answerControllers.add(TextEditingController(text: q)));
-    while (answerControllers.length < 4)
-      answerControllers.add(TextEditingController());
-
+    resetForm();
     return Builder(
       builder: (context) => Form(
         key: _formKey,
@@ -130,7 +124,8 @@ class _QuestionItemState extends State<QuestionItem> {
               ),
               DifficultyPicker(controller: difficultyController),
 
-              ...getActionWidgets(context),
+              ...getActionWidgets(context)
+              
             ],
           ),
 
@@ -139,35 +134,56 @@ class _QuestionItemState extends State<QuestionItem> {
     );
   }
 
+  resetForm() {
+    _formKey.currentState?.reset();
+    entitledController = TextEditingController();
+    entitledTypeController = TypePickerController();
+    answerControllers = List<TextEditingController>();
+    answerTypesController = TypePickerController();
+    difficultyController = DifficultyPickerController();
+
+    entitledController.text = widget.question?.entitled;
+    entitledTypeController.value = widget.question?.entitledType;
+    answerTypesController.value = widget.question?.answersType;
+    difficultyController.value = widget.question?.difficulty;
+    answerControllers = [];
+    widget.question?.answers?.forEach((q) => answerControllers.add(TextEditingController(text: q)));
+    while (answerControllers.length < 4)
+      answerControllers.add(TextEditingController());
+  }
+
 
   List<Widget> getActionWidgets(context) {
-    if (widget.question == null) {
+    if (inProgress)
+      return [SizedBox(height: 24, width: 24, child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary)))];
+
+    if (widget.question == null)
       return [ButtonTheme(
         minWidth: 0,
         child: FlatButton(
-          child: Text(inProgress ? "Loading..." : "Add"), 
+          child: Text("Add"), 
           textColor: AppColors.primary,
-          onPressed: inProgress ? null : () => onAddQuestion(context)
+          onPressed: () => onAddQuestion(context)
         ),
       )];
-    } else {
-      return [
-        InkWell(
-          child: Icon(Icons.delete, color: AppColors.error),
 
-          onTap: () => SnackBarFactory.showSuccessSnackbar(context: context, message: "Long click to delete the theme."),
-          onLongPress: () => onDeleteQuestion(context),
-        ),
-        SizedBox(child: SizedBox(width: Values.normalSpacing)),
-        InkWell(
-          child: Icon(Icons.save, color: AppColors.primary),
-          onTap:  () => onUpdateQuestion(context),
-        ),
-      ];
-    }
+    return [
+      InkWell(
+        child: Icon(Icons.delete, color: AppColors.error),
+
+        onTap: () => SnackBarFactory.showSuccessSnackbar(context: context, message: "Long click to delete the theme."),
+        onLongPress: () => onDeleteQuestion(context),
+      ),
+      SizedBox(child: SizedBox(width: Values.normalSpacing)),
+      InkWell(
+        child: Icon(Icons.save, color: AppColors.primary),
+        onTap:  () => onUpdateQuestion(context),
+      ),
+    ];
   }
 
   onAddQuestion(context) {
+    print(entitledTypeController.value);
     if (_formKey.currentState.validate()) {
       handleProviderFunction(context, Provider.of<QuestionsProvider>(context, listen: false).addQuestion, getQuestionFromForm());
     }
@@ -201,7 +217,7 @@ class _QuestionItemState extends State<QuestionItem> {
     function(q)
         .then((_) => SnackBarFactory.showSuccessSnackbar(context: context, message: "Success."))
         .catchError((e) => SnackBarFactory.showErrorSnabar(context: context, message: e.toString()))
-        .whenComplete(() => inProgress = false);
+        .whenComplete(() {resetForm(); inProgress = false;});
   }
 }
 

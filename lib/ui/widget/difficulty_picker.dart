@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/res/colors.dart';
-import 'package:geoquizadmin/res/values.dart';
+
 
 class DifficultyPicker extends FormField<int> {
   static final min = 1;
@@ -22,7 +22,7 @@ class DifficultyPicker extends FormField<int> {
       max: max,
       state: state,
     ),
-    validator: (value) => value != null && value >=1 && value <= 5 ? null : "invalid"
+    validator: (_) => controller.value != null && controller.value >=1 && controller.value <= 5 ? null : "invalid"
 
   );
 
@@ -99,6 +99,15 @@ class _DifficultyPickerState extends FormFieldState<int> {
   @override
   DifficultyPicker get widget => super.widget;
 
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    setValue(widget.controller.value);
+  }
+
   increase() {
     if (widget.controller.value == null)
       widget.controller.value = 1;
@@ -115,11 +124,6 @@ class _DifficultyPickerState extends FormFieldState<int> {
     this.setValue(widget.controller.value);
   }
 
-  @override
-  void reset() {
-    super.reset();
-    setState(() => widget.controller.value = null);
-  }
 }
 
 

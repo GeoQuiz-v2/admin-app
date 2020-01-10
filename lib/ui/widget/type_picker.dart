@@ -19,7 +19,7 @@ class TypePicker extends FormField<Type> {
       state: state,
       onSelect: (type) => (state as _TypePickerState).set(type),
     ),
-    validator: (value) => value != null ? null : "invalid"
+    validator: (_) => controller.value != null ? null : "invalid"
 
   );
 
@@ -49,7 +49,9 @@ class _TypePickerWidget extends StatefulWidget {
 
 class _TypePickerWidgetState extends State<_TypePickerWidget> {
 
-  Type selectedType;
+  Type get selectedType => widget.controller.value;
+  set selectedType(t) => widget.controller.value = t;
+
 
   @override
   Widget build(BuildContext context) {
@@ -78,17 +80,15 @@ class _TypePickerWidgetState extends State<_TypePickerWidget> {
 class _TypePickerState extends FormFieldState<Type> {
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   TypePicker get widget => super.widget;
 
   set(Type type) {
     widget.controller.value = type;
-    this.setValue(type);
-  }
-
-  @override
-  void reset() {
-    super.reset();
-    setState(() => widget.controller.value = null);
   }
 }
 

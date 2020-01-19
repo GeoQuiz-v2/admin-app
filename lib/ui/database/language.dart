@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geoquizadmin/models/database_provider.dart';
 import 'package:geoquizadmin/models/models.dart';
-import 'package:geoquizadmin/models/questions_provider.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/widget/form_dialog.dart';
@@ -18,7 +18,6 @@ class SupportedLanguageWidget extends StatelessWidget {
       children: <Widget>[
         SubTitle(
           "Supported languages",
-          first: true,
           action: FlatButton.icon(
             textColor: AppColors.primary,
             label: Text("Add new supported language"),
@@ -26,7 +25,7 @@ class SupportedLanguageWidget extends StatelessWidget {
             onPressed: () => onAddSupportedLanguage(context),
           ),
         ),
-        Consumer<QuestionsProvider>(
+        Consumer<DatabaseProvider>(
           builder: (context, provider, _) => DropdownButtonHideUnderline(
             child: Container(
               decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(Values.radius)),
@@ -76,7 +75,7 @@ class _AddSupportedLanguageDialogState extends State<AddSupportedLanguageDialog>
   }
 
   Future<bool> onSubmit(String isoCode) async {
-    await Provider.of<QuestionsProvider>(context, listen: false).addSupportedLanguage(Language(isoCode));
+    await Provider.of<DatabaseProvider>(context, listen: false).addSupportedLanguage(Language(isoCode));
     return true;
   }
 }

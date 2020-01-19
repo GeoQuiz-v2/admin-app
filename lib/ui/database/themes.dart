@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/models/models.dart';
-import 'package:geoquizadmin/models/questions_provider.dart';
+import 'package:geoquizadmin/models/database_provider.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/widget/color_picker.dart';
@@ -21,7 +21,7 @@ class ThemeListWidget extends StatelessWidget {
       children: <Widget>[
         SubTitle("Themes"),
         ThemeItem(),
-        Consumer<QuestionsProvider>(
+        Consumer<DatabaseProvider>(
           builder: (context, provider, _) => 
             provider.themes == null 
             ? Container()
@@ -63,7 +63,7 @@ class _ThemeItemState extends State<ThemeItem> {
   set inProgress(b) => setState(() => _inProgress = b);
   get inProgress => _inProgress;
 
-  bool get selected => widget.theme != null && Provider.of<QuestionsProvider>(context, listen: false).currentSelectedTheme == widget.theme;
+  bool get selected => widget.theme != null && Provider.of<DatabaseProvider>(context, listen: false).currentSelectedTheme == widget.theme;
   
 
   @override
@@ -85,7 +85,7 @@ class _ThemeItemState extends State<ThemeItem> {
           onTap: widget.theme == null 
             ? null 
             : () {
-              Provider.of<QuestionsProvider>(context, listen: false).currentSelectedTheme = widget.theme;
+              Provider.of<DatabaseProvider>(context, listen: false).currentSelectedTheme = widget.theme;
             },
           child: Container(
             width: double.infinity,
@@ -169,7 +169,7 @@ class _ThemeItemState extends State<ThemeItem> {
   onAddTheme(context) {
     if (_formKey.currentState.validate()){
       inProgress = true;
-      Provider.of<QuestionsProvider>(context, listen: false).addTheme(getThemeFromForm())
+      Provider.of<DatabaseProvider>(context, listen: false).addTheme(getThemeFromForm())
         .then((_) => SnackBarFactory.showSuccessSnackbar(context: context, message: "Successfully added."))
         .catchError((e) => SnackBarFactory.showErrorSnabar(context: context, message: e.toString()))
         .whenComplete(() => inProgress = false);
@@ -179,7 +179,7 @@ class _ThemeItemState extends State<ThemeItem> {
 
   onUpdateTheme(context) {
     if (_formKey.currentState.validate()) {
-      Provider.of<QuestionsProvider>(context, listen: false).updateTheme(getThemeFromForm())
+      Provider.of<DatabaseProvider>(context, listen: false).updateTheme(getThemeFromForm())
         .then((_) => SnackBarFactory.showSuccessSnackbar(context: context, message: "Successfully updated."))
         .catchError((e) => SnackBarFactory.showErrorSnabar(context: context, message: e.toString()));
     }
@@ -188,7 +188,7 @@ class _ThemeItemState extends State<ThemeItem> {
 
 
   onDeleteTheme(context) {
-    Provider.of<QuestionsProvider>(context, listen: false).removeTheme(widget.theme)
+    Provider.of<DatabaseProvider>(context, listen: false).removeTheme(widget.theme)
       .then((_) => SnackBarFactory.showSuccessSnackbar(context: context, message: "Successfully deleted."))
       .catchError((e) => SnackBarFactory.showErrorSnabar(context: context, message: e.toString()));
   }

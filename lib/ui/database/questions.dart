@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/models/models.dart';
-import 'package:geoquizadmin/models/questions_provider.dart';
+import 'package:geoquizadmin/models/database_provider.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/widget/difficulty_picker.dart';
@@ -28,7 +28,7 @@ class _QuestionListWidgetState extends State<QuestionListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<QuestionsProvider>(
+    return Consumer<DatabaseProvider>(
       builder: (context, provider, child) {
 
         String currentSelectedThemeId = provider.currentSelectedTheme?.id;
@@ -263,24 +263,24 @@ class _QuestionItemState extends State<QuestionItem> {
   onAddQuestion(context) {
     print(entitledTypeController.value);
     if (_formKey.currentState.validate()) {
-      handleProviderFunction(context, Provider.of<QuestionsProvider>(context, listen: false).addQuestion, getQuestionFromForm());
+      handleProviderFunction(context, Provider.of<DatabaseProvider>(context, listen: false).addQuestion, getQuestionFromForm());
     }
   }
 
   onUpdateQuestion(context) {
     if (_formKey.currentState.validate()) {
-      handleProviderFunction(context, Provider.of<QuestionsProvider>(context, listen: false).updateQuestion, getQuestionFromForm());
+      handleProviderFunction(context, Provider.of<DatabaseProvider>(context, listen: false).updateQuestion, getQuestionFromForm());
     }
   }
 
 
   onDeleteQuestion(context) {
-    handleProviderFunction(context, Provider.of<QuestionsProvider>(context, listen: false).removeQuestion, widget.question);
+    handleProviderFunction(context, Provider.of<DatabaseProvider>(context, listen: false).removeQuestion, widget.question);
   }
 
   Question getQuestionFromForm() {
     return Question(
-      themeId: Provider.of<QuestionsProvider>(context, listen: false).currentSelectedTheme.id,
+      themeId: Provider.of<DatabaseProvider>(context, listen: false).currentSelectedTheme.id,
       id: widget.question?.id,
       entitled: entitledController.text,
       entitledType: entitledTypeController.value,

@@ -4,7 +4,7 @@ import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:geoquizadmin/env.dart';
 import 'package:geoquizadmin/models/auth_notifier.dart';
-import 'package:geoquizadmin/models/questions_provider.dart';
+import 'package:geoquizadmin/models/database_provider.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/authentication/authentication.dart';
@@ -29,7 +29,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthenticationNotifier()),
-        ChangeNotifierProvider(create: (_) => QuestionsProvider())
+        ChangeNotifierProvider(create: (_) => DatabaseProvider())
       ],
       child: GeoQuizApp(),
     )

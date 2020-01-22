@@ -15,7 +15,7 @@ abstract class Model {
   
   Model({@required this.id});
   
-  Map<String, Object> toJSON();
+  Map<String, Object> toJson();
 }
 
 class QuizTheme extends Model {
@@ -34,7 +34,7 @@ class QuizTheme extends Model {
     this.entitled = data["entitled"];
   }
 
-  Map<String, Object> toJSON() => {
+  Map<String, Object> toJson() => {
     "icon": rawSVG,
     "title": title,
     "color": color,
@@ -74,7 +74,7 @@ class Question extends Model{
   }
 
   @override
-  Map<String, Object> toJSON() => {
+  Map<String, Object> toJson() => {
     "theme": themeId,
     "entitled": entitled,
     "entitled_type": entitledType.label,

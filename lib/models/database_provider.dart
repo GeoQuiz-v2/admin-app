@@ -1,21 +1,23 @@
 
 import 'dart:async';
-import 'dart:html' as html;
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/firestore.dart' as fs;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:geoquizadmin/env.dart';
 import 'package:geoquizadmin/models/models.dart';
+import 'package:http/http.dart' as http;
 
-import 'dart:convert';
+
 
 class DatabaseProvider extends ChangeNotifier {
 
+  static const DATABASE_VERSION_FILENAME = "version";
+  static const DATABASE_CONTENT_FILENAME = "database.json";
   
   fs.Firestore _firestore = fb.firestore();
+  fb.StorageReference _firebaseStorage = fb.storage().ref("");
 
   final collectionThemes = "themes";
   final collectionQuestions = "questions";
@@ -81,11 +83,11 @@ class DatabaseProvider extends ChangeNotifier {
 
 
   Future<void> addTheme(QuizTheme t) async {
-    await _firestore.collection(collectionThemes).add(t.toJSON());
+    await _firestore.collection(collectionThemes).add(t.toJson());
   }
 
   Future<void> updateTheme(QuizTheme t) async {
-    await _firestore.collection(collectionThemes).doc(t.id).update(data: t.toJSON());
+    await _firestore.collection(collectionThemes).doc(t.id).update(data: t.toJson());
   }
 
   Future<void> removeTheme(QuizTheme t) async {
@@ -93,11 +95,11 @@ class DatabaseProvider extends ChangeNotifier {
   }
 
   Future<void> addQuestion(Question q) async {
-    await _firestore.collection(collectionQuestions).add(q.toJSON());
+    await _firestore.collection(collectionQuestions).add(q.toJson());
   }
 
   Future<void> updateQuestion(Question q) async {
-    await _firestore.collection(collectionQuestions).doc(q.id).update(data: q.toJSON());
+    await _firestore.collection(collectionQuestions).doc(q.id).update(data: q.toJson());
   }
 
   Future<void> removeQuestion(Question q) async {
@@ -105,26 +107,33 @@ class DatabaseProvider extends ChangeNotifier {
   }
 
   Future<void> _initDatabaseVersion() async {
-    fb.StorageReference _firebaseStorage = fb.storage().ref("");
-    fb.StorageReference _ref = _firebaseStorage.child("version");
+    fb.StorageReference _ref = _firebaseStorage.child(DATABASE_VERSION_FILENAME);
     String fileURL = (await _ref.getDownloadURL()).toString();
-    html.HttpClient client;
-    final html.Response downloadData = await html.get(fileURL);
-    print("3");
-    String contentFile = utf8.decode(downloadData.bodyBytes);
-    print("4");
-    currentDatabaseVersion = int.parse(contentFile);
-
+    http.Response res = await http.get(fileURL);
+    currentDatabaseVersion =  int.parse(res.body);
     
     notifyListeners();
   }
 
   Future<void> publishDatabase() async {
-    fb.StorageReference _firebaseStorage = fb.storage().ref("");
-    currentDatabaseVersion = currentDatabaseVersion??0 + 1;
-    fb.StorageReference _ref = _firebaseStorage.child("version");
-    String a = "42";
-    Future futureTask = _ref.putString(a).future; 
-    futureTask.catchError((e) => print(e));
+    var _refVersion = _firebaseStorage.child(DATABASE_VERSION_FILENAME);
+    var _refDatabase = _firebaseStorage.child(DATABASE_CONTENT_FILENAME);
+
+    var newVersion = (currentDatabaseVersion??0) + 1;
+    var databaseJSON = Map<String, Object>();
+    databaseJSON["themes"] = themes;
+    databaseJSON["questions"] = questions;
+
+    try {
+      var taskUploadDatabaseContent = _refDatabase.putString(jsonEncode(databaseJSON));
+      await taskUploadDatabaseContent.future;
+    } catch(e) {print(e); return ;}
+    try {
+      var taskUpdateDatabaseVersion = _refVersion.putString(newVersion.toString()); 
+      await taskUpdateDatabaseVersion.future;
+    } catch(e) {print(e); return ;}
+
+    currentDatabaseVersion = newVersion; 
+    notifyListeners();
   }
 }

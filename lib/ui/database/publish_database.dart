@@ -17,7 +17,7 @@ class _PublishDatabaseState extends State<PublishDatabase> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(Values.normalSpacing),
+      padding: EdgeInsets.symmetric(horizontal: Values.normalSpacing),
       decoration: BoxDecoration(
         color: AppColors.error.withOpacity(0.1),
         borderRadius: BorderRadius.circular(Values.radius),

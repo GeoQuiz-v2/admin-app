@@ -10,21 +10,21 @@ import 'package:geoquizadmin/ui/widget/utils.dart';
 import 'package:provider/provider.dart';
 
 
-class Template extends StatefulWidget {
+class ApplicationView extends StatefulWidget {
 
   final Map<String, Widget> pages = {
     "Database" : DatabaseScreen(),
     "Dashboard" : DashboardScreen(),
   };
 
-  Template({Key key}) : super(key: key);
+  ApplicationView({Key key}) : super(key: key);
 
   
   @override
-  _TemplateState createState() => _TemplateState();
+  _ApplicationViewState createState() => _ApplicationViewState();
 }
 
-class _TemplateState extends State<Template> {
+class _ApplicationViewState extends State<ApplicationView> {
 
   MapEntry<String, Widget> currentPage;
 
@@ -55,19 +55,18 @@ class _TemplateState extends State<Template> {
       appBar: MainAppBar(),
       body: Center(
         child: Container(
-              // constraints: BoxConstraints(maxWidth: 1024),
-              padding: EdgeInsets.all(Values.screenMargin),
-              child: ScrollConfiguration(
-                behavior: BasicScrollWithoutGlow(),
-                child: ListView(
-                  children: <Widget>[
-                    SizedBox(height: Values.normalSpacing,),
-                    Text(currentPage.key, style: Theme.of(context).textTheme.subtitle,),
-                    SizedBox(height: Values.blockSpacing),
-                    currentPage.value
-                  ],
-                ),
-              ),
+          padding: EdgeInsets.all(Values.screenMargin),
+          child: ScrollConfiguration(
+            behavior: BasicScrollWithoutGlow(),
+            child: ListView(
+              children: <Widget>[
+                SizedBox(height: Values.normalSpacing,),
+                Text(currentPage.key, style: Theme.of(context).textTheme.subtitle,),
+                SizedBox(height: Values.blockSpacing),
+                currentPage.value
+              ],
+            ),
+          ),
         ),
       ),
     );

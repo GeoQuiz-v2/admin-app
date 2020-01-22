@@ -9,6 +9,9 @@ import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/application.dart';
 import 'package:geoquizadmin/ui/authentication/authentication.dart';
+import 'package:geoquizadmin/ui/dashboard/dashboard.dart';
+import 'package:geoquizadmin/ui/database/database.dart';
+import 'package:geoquizadmin/ui/database/publish_database.dart';
 import 'package:provider/provider.dart';
 
 
@@ -89,7 +92,19 @@ class _GeoQuizAppState extends State<GeoQuizApp> {
         builder: (context , provider, _) {
           return !provider.isInit || provider.user == null
             ? AuthenticationScreen()
-            : ApplicationView();
+            : ApplicationView(
+              tabs: <TabTemplate>[
+                TabTemplate(
+                  title: Text("Dashaboard"),
+                  content: DashboardScreen(),
+                ),
+                TabTemplate(
+                  title: Text("Database"),
+                  action: PublishDatabase(),
+                  content: DatabaseScreen(),
+                )
+              ],
+            );
         }
       ),
     );

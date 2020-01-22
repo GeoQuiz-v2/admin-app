@@ -48,8 +48,8 @@ class ThemeItem extends StatefulWidget {
   
 }
 
-class _ThemeItemState extends State<ThemeItem> {
 
+class _ThemeItemState extends State<ThemeItem> {
 
   final _formKey = GlobalKey<FormState>();
 

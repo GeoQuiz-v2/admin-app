@@ -3,8 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/models/auth_notifier.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
-import 'package:geoquizadmin/ui/dashboard/dashboard.dart';
-import 'package:geoquizadmin/ui/database/database.dart';
 import 'package:geoquizadmin/ui/widget/logo.dart';
 import 'package:geoquizadmin/ui/widget/utils.dart';
 import 'package:provider/provider.dart';
@@ -12,12 +10,9 @@ import 'package:provider/provider.dart';
 
 class ApplicationView extends StatefulWidget {
 
-  final Map<String, Widget> pages = {
-    "Database" : DatabaseScreen(),
-    "Dashboard" : DashboardScreen(),
-  };
+  final List<TabTemplate> tabs;
 
-  ApplicationView({Key key}) : super(key: key);
+  ApplicationView({Key key, @required this.tabs}) : super(key: key);
 
   
   @override
@@ -26,12 +21,12 @@ class ApplicationView extends StatefulWidget {
 
 class _ApplicationViewState extends State<ApplicationView> {
 
-  MapEntry<String, Widget> currentPage;
+  TabTemplate currentTab;
 
   @override
   void initState() {
     super.initState();
-    currentPage = widget.pages.entries.first;
+    currentTab = widget.tabs.first;
   }
 
 
@@ -40,40 +35,61 @@ class _ApplicationViewState extends State<ApplicationView> {
     return Scaffold(
       drawer: Drawer(
         child: ListView(
-          children: widget.pages.keys.map(
-            (key) => ListTile(
-              title: Text(key),
-              onTap: () {
-                setState(() => currentPage = MapEntry(key, widget.pages[key]));
-                Navigator.pop(context);
-              } ,
-            )
-          ).toList(),
+          children: widget.tabs.map((tab) => ListTile(
+            title: tab.title,
+            onTap: () {
+              setState(() => currentTab = tab);
+              Navigator.pop(context);
+            },
+          )).toList(),
         ),
       ),
 
       appBar: MainAppBar(),
-      body: Center(
-        child: Container(
-          padding: EdgeInsets.all(Values.screenMargin),
-          child: ScrollConfiguration(
-            behavior: BasicScrollWithoutGlow(),
-            child: ListView(
-              children: <Widget>[
-                SizedBox(height: Values.normalSpacing,),
-                Text(currentPage.key, style: Theme.of(context).textTheme.subtitle,),
-                SizedBox(height: Values.blockSpacing),
-                currentPage.value
-              ],
-            ),
+      
+      body: currentTab
+    );
+  }
+}
+
+
+class TabTemplate extends StatelessWidget {
+  final Widget title;
+  final Widget action;
+  final Widget content;
+
+  TabTemplate({Key key, @required this.title, this.action, @required this.content}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        padding: EdgeInsets.all(Values.screenMargin),
+        child: ScrollConfiguration(
+          behavior: BasicScrollWithoutGlow(),
+          child: ListView(
+            children: <Widget>[
+              SizedBox(height: Values.normalSpacing,),
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: Values.blockSpacing,
+                children: [
+                  DefaultTextStyle(
+                    style: Theme.of(context).textTheme.subtitle,
+                    child: title,
+                  ),
+                  if (action != null)
+                    action,
+                ]
+              ),
+              content
+            ],
           ),
         ),
       ),
     );
   }
 }
-
-
 
 
 

@@ -20,14 +20,19 @@ class ThemeListWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SubTitle("Themes"),
-        ThemeItem(),
         Consumer<DatabaseProvider>(
           builder: (context, provider, _) => 
             provider.themes == null 
             ? Container()
             : ListView(
+              key: GlobalKey(),
               shrinkWrap: true,
-              children: provider.themes.map((t) => ThemeItem(theme: t)).toList(),
+              children: [
+                ThemeItem(),
+                ...provider.themes.map((t) => ThemeItem(
+                  theme: t,
+                )).toList(),
+              ]
             )
         ),
       ],
@@ -53,10 +58,10 @@ class _ThemeItemState extends State<ThemeItem> {
 
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _svgController;
-  TextEditingController _titleController;
-  TextEditingController _entitledController;
-  TextEditingController _colorController;
+  TextEditingController _svgController = TextEditingController();
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _entitledController = TextEditingController();
+  int _colorController;
 
   bool _inProgress = false;
 
@@ -67,16 +72,16 @@ class _ThemeItemState extends State<ThemeItem> {
   
 
   @override
-  Widget build(BuildContext context) {
-    _svgController = TextEditingController();
-    _titleController = TextEditingController();
-    _entitledController = TextEditingController();
-    _colorController = TextEditingController();
+  void initState() {
+    super.initState();
     _titleController.text = widget.theme?.title;
     _svgController.text = widget.theme?.rawSVG;
     _entitledController.text = widget.theme?.entitled;
-    _colorController.text = widget.theme?.color?.toString();
+  }
 
+
+  @override
+  Widget build(BuildContext context) {
     return Builder(
         builder: (context) => Form(
         key: _formKey,
@@ -118,7 +123,11 @@ class _ThemeItemState extends State<ThemeItem> {
 
                 SizedBox(width: Values.normalSpacing,),
 
-                ColorPicker(controller: _colorController, color: widget.theme?.color),
+                ColorPicker(
+                  initialColor: widget.theme?.color,
+                  validator: (c) => c == null || c.toString().length != 10 ? "Invalid color" : null,
+                  onSaved: (c) => _colorController = c,
+                ),
 
                 SizedBox(width: Values.normalSpacing,),
 
@@ -168,6 +177,7 @@ class _ThemeItemState extends State<ThemeItem> {
 
   onAddTheme(context) {
     if (_formKey.currentState.validate()){
+      _formKey.currentState.save();
       inProgress = true;
       Provider.of<DatabaseProvider>(context, listen: false).addTheme(getThemeFromForm())
         .then((_) => SnackBarFactory.showSuccessSnackbar(context: context, message: "Successfully added."))
@@ -179,6 +189,7 @@ class _ThemeItemState extends State<ThemeItem> {
 
   onUpdateTheme(context) {
     if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
       Provider.of<DatabaseProvider>(context, listen: false).updateTheme(getThemeFromForm())
         .then((_) => SnackBarFactory.showSuccessSnackbar(context: context, message: "Successfully updated."))
         .catchError((e) => SnackBarFactory.showErrorSnabar(context: context, message: e.toString()));
@@ -199,7 +210,7 @@ class _ThemeItemState extends State<ThemeItem> {
       id: widget.theme?.id,
       title: _titleController.text,
       entitled: _entitledController.text,
-      color: int.parse(_colorController.text),
+      color: _colorController,
       rawSVG: _svgController.text,
     );
   }

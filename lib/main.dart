@@ -95,14 +95,14 @@ class _GeoQuizAppState extends State<GeoQuizApp> {
             : ApplicationView(
               tabs: <TabTemplate>[
                 TabTemplate(
-                  title: Text("Dashaboard"),
-                  content: DashboardScreen(),
-                ),
-                TabTemplate(
                   title: Text("Database"),
                   action: PublishDatabase(),
                   content: DatabaseScreen(),
-                )
+                ),
+                TabTemplate(
+                  title: Text("Dashaboard"),
+                  content: DashboardScreen(),
+                ),
               ],
             );
         }

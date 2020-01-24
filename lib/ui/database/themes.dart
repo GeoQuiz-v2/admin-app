@@ -77,6 +77,7 @@ class _ThemeItemState extends State<ThemeItem> {
     _titleController.text = widget.theme?.title;
     _svgController.text = widget.theme?.rawSVG;
     _entitledController.text = widget.theme?.entitled;
+    _colorController = widget.theme?.color;
   }
 
 
@@ -124,7 +125,7 @@ class _ThemeItemState extends State<ThemeItem> {
                 SizedBox(width: Values.normalSpacing,),
 
                 ColorPicker(
-                  initialColor: widget.theme?.color,
+                  initialColor: _colorController,
                   validator: (c) => c == null || c.toString().length != 10 ? "Invalid color" : null,
                   onSaved: (c) => _colorController = c,
                 ),
@@ -151,6 +152,7 @@ class _ThemeItemState extends State<ThemeItem> {
       ),
     );
   }
+
 
   List<Widget> getActionWidgets(context) {
     if (widget.theme == null) {
@@ -194,7 +196,6 @@ class _ThemeItemState extends State<ThemeItem> {
         .then((_) => SnackBarFactory.showSuccessSnackbar(context: context, message: "Successfully updated."))
         .catchError((e) => SnackBarFactory.showErrorSnabar(context: context, message: e.toString()));
     }
-
   }
 
 
@@ -214,7 +215,5 @@ class _ThemeItemState extends State<ThemeItem> {
       rawSVG: _svgController.text,
     );
   }
-
-
 }
 

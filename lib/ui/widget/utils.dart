@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:geoquizadmin/res/colors.dart';
+
 
 String Function(String) basicValidator = (value) => value == null || value.isEmpty ? "Invalid" : null;
 

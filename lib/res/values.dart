@@ -1,5 +1,5 @@
 import 'package:flutter/painting.dart';
-import 'package:geoquizadmin/res/colors.dart';
+
 
 class Values {
   static final screenMargin = 20.0;

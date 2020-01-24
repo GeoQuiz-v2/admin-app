@@ -11,7 +11,7 @@ import 'package:geoquizadmin/ui/widget/subtitle.dart';
 import 'package:geoquizadmin/ui/widget/utils.dart';
 import 'package:provider/provider.dart';
 
-
+// to show snackbar easily (not the best solution ...)
 final GlobalKey globalKey = GlobalKey();
 
 
@@ -159,7 +159,6 @@ class _ThemeItemState extends State<ThemeItem> {
               SizedBox(width: Values.normalSpacing,),
               
               ...getActionWidgets(context),
-
             ],
           )
         ),

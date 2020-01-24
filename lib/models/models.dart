@@ -35,6 +35,7 @@ class QuizTheme extends Model {
   }
 
   Map<String, Object> toJson() => {
+    "id": id,
     "icon": rawSVG,
     "title": title,
     "color": color,
@@ -75,6 +76,7 @@ class Question extends Model{
 
   @override
   Map<String, Object> toJson() => {
+    "id": id,
     "theme": themeId,
     "entitled": entitled,
     "entitled_type": entitledType.label,

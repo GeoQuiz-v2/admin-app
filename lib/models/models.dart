@@ -18,14 +18,20 @@ abstract class Model {
   Map<String, Object> toJson();
 }
 
+
 class QuizTheme extends Model {
   String rawSVG;
   String title;
   int color;
   String entitled;
 
-  QuizTheme({String id, @required this.rawSVG, @required this.title, @required this.color, @required this.entitled}) 
-  : super(id: id);
+  QuizTheme({
+    String id,
+    @required this.rawSVG,
+    @required this.title,
+    @required this.color,
+    @required this.entitled
+  }) : super(id: id);
 
   QuizTheme.fromJSON({String id, @required Map<String, Object> data}) : super(id: id) {
     this.rawSVG = data["icon"];
@@ -36,13 +42,13 @@ class QuizTheme extends Model {
 
   Map<String, Object> toJson() => {
     "id": id,
-    "icon": rawSVG,
     "title": title,
+    "icon": rawSVG,
     "color": color,
     "entitled": entitled,
   };
-  
 }
+
 
 class Question extends Model{
   String themeId;
@@ -61,9 +67,15 @@ class Question extends Model{
     answers.length < 4 || 
     difficulty == null;
     
-
-  Question({String id, @required this.themeId, @required this.entitledType, @required this.entitled, @required this.answers, @required this.answersType, @required this.difficulty})
-  : super(id: id);
+  Question({
+    String id,
+    @required this.themeId,
+    @required this.entitledType,
+    @required this.entitled,
+    @required this.answers,
+    @required this.answersType,
+    @required this.difficulty
+  }) : super(id: id);
 
   Question.fromJSON({String id, @required Map<String, Object> data}) : super(id: id) {
     this.themeId = data["theme"] as String;
@@ -71,7 +83,7 @@ class Question extends Model{
     this.entitledType = Types.fromLabel(data["entitled_type"]);
     this.answers = (data["answers"] as List<dynamic>).cast<String>();
     this.answersType = Types.fromLabel(data["answers_type"]);
-    this.difficulty = data["difficlty"] as int;
+    this.difficulty = data["difficulty"] as int;
   }
 
   @override
@@ -82,31 +94,31 @@ class Question extends Model{
     "entitled_type": entitledType.label,
     "answers": answers,
     "answers_type": answersType.label,
-    "difficlty": difficulty
+    "difficulty": difficulty
   };
-  
 }
 
 
 class Type {
-  String label;
-  IconData icon;
+  final String label;
+  final IconData icon;
 
   Type({this.label, this.icon});
 }
 
 
 class Types {
-  static var textType = Type(icon: Icons.title, label: "text");
-  static var imageType = Type(icon: Icons.image, label: "image");
-  static var locationType = Type(icon: Icons.location_on, label: "location");
+  static var text = Type(icon: Icons.title, label: "txt");
+  static var image = Type(icon: Icons.image, label: "img");
+  static var location = Type(icon: Icons.location_on, label: "loc");
+
+  static Iterable<Type> get values => [text, image, location];
   
   static Type fromLabel(String label) {
-    switch (label) {
-      case "text": return textType;
-      case "image": return imageType;
-      case "location": return locationType;
-      default: return Type(label: label, icon: Icons.help_outline);
+    for (var t in values) {
+      if (t.label == label)
+        return t;
     }
+    return Type(label: "unknown", icon: Icons.error);
   }
 }

@@ -148,7 +148,7 @@ class _QuestionItemState extends State<QuestionItem> {
           child: Row(
             children: <Widget>[
               TypePicker(
-                types: [Types.imageType, Types.textType],
+                types: [Types.image, Types.text],
                 controller: entitledTypeController,
               ),
 
@@ -164,7 +164,7 @@ class _QuestionItemState extends State<QuestionItem> {
               SizedBox(child: SizedBox(width: Values.normalSpacing,),),
 
               TypePicker(
-                types: [Types.imageType, Types.textType, Types.locationType],
+                types: [Types.image, Types.text, Types.location],
                 controller: answerTypesController,
               ),
 

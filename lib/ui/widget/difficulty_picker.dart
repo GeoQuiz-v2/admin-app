@@ -130,5 +130,5 @@ class _DifficultyPickerState extends FormFieldState<int> {
 class DifficultyPickerController {
   int value;
 
-  DifficultyPickerController({int selectedValues}) : value = selectedValues;
+  DifficultyPickerController({int selectedValue}) : value = selectedValue;
 }

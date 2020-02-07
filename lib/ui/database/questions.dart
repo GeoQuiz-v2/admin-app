@@ -58,6 +58,7 @@ class _QuestionListWidgetState extends State<QuestionListWidget> {
             currentSelectedThemeId == null 
             ? Text("Select a theme to view questions.", style: TextStyle(color: AppColors.textColorLight))
             : ListView.builder(
+                key: GlobalKey(),
                 shrinkWrap: true,
                 itemCount: questions == null ? 0 : min(questions.length, 10),
                 physics: ClampingScrollPhysics(),
@@ -129,13 +130,19 @@ class _QuestionItemState extends State<QuestionItem> {
   @override
   void initState() {
     super.initState();
-    resetForm();
+    entitledController = TextEditingController(text: widget.question?.entitled);
+    entitledTypeController = TypePickerController(initialType: widget.question?.entitledType);
+    answerTypesController = TypePickerController(initialType: widget.question?.answersType);
+    difficultyController = DifficultyPickerController(selectedValue: widget.question?.difficulty);
+    answerControllers = [];
+    widget.question?.answers?.forEach((q) => answerControllers.add(TextEditingController(text: q)));
+    while (answerControllers.length < minumumNumberOfQuestions)
+      answerControllers.add(TextEditingController());
   }
 
 
   @override
   Widget build(BuildContext context) {
-    // resetForm();
     return Builder(
       builder: (context) => Form(
         key: _formKey,
@@ -214,24 +221,6 @@ class _QuestionItemState extends State<QuestionItem> {
     );
   }
 
-  resetForm() {
-    _formKey.currentState?.reset();
-    entitledController = TextEditingController();
-    entitledTypeController = TypePickerController();
-    answerControllers = List<TextEditingController>();
-    answerTypesController = TypePickerController();
-    difficultyController = DifficultyPickerController();
-
-    entitledController.text = widget.question?.entitled;
-    entitledTypeController.value = widget.question?.entitledType;
-    answerTypesController.value = widget.question?.answersType;
-    difficultyController.value = widget.question?.difficulty;
-    answerControllers = [];
-    widget.question?.answers?.forEach((q) => answerControllers.add(TextEditingController(text: q)));
-    while (answerControllers.length < minumumNumberOfQuestions)
-      answerControllers.add(TextEditingController());
-  }
-
 
   List<Widget> getActionWidgets(context) {
     if (inProgress)
@@ -296,7 +285,7 @@ class _QuestionItemState extends State<QuestionItem> {
     function(q)
         .then((_) => SnackBarFactory.showSuccessSnackbar(context: context, message: "Success."))
         .catchError((e) => SnackBarFactory.showErrorSnabar(context: context, message: e.toString()))
-        .whenComplete(() {resetForm(); inProgress = false;});
+        .whenComplete(() {inProgress = false;});
   }
 }
 

@@ -41,6 +41,7 @@ class _QuestionListWidgetState extends State<QuestionListWidget> {
           questions = onlyQuestionsWithProblems ? questionWithProblems : allQuestions;
         }
         return Column(
+          key: GlobalKey(),
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SubTitle(
@@ -58,7 +59,6 @@ class _QuestionListWidgetState extends State<QuestionListWidget> {
             currentSelectedThemeId == null 
             ? Text("Select a theme to view questions.", style: TextStyle(color: AppColors.textColorLight))
             : ListView.builder(
-                key: GlobalKey(),
                 shrinkWrap: true,
                 itemCount: questions == null ? 0 : min(questions.length, 10),
                 physics: ClampingScrollPhysics(),

@@ -1,5 +1,3 @@
-import 'dart:html' as html;
-
 import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:geoquizadmin/env.dart';
@@ -40,13 +38,8 @@ void main() {
 }
 
 
-class GeoQuizApp extends StatefulWidget {
-  @override
-  _GeoQuizAppState createState() => _GeoQuizAppState();
-}
+class GeoQuizApp extends StatelessWidget {
 
-
-class _GeoQuizAppState extends State<GeoQuizApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -108,52 +101,5 @@ class _GeoQuizAppState extends State<GeoQuizApp> {
         }
       ),
     );
-  }
-
-
-  //////////////////////////////////////////////////////////
-  /// What follows is a hack to solve the following issue: 
-  /// https://github.com/flutter/flutter/issues/32274
-  /// ([web]: Blurry rendering at some resolutions #32274)
-  /// To be removed when the issue is resolved !!!!
-  /// Hack author : @moodstubos
-  /////////////////////////////////////////////////////////
-  html.MutationObserver _mutationObserver;
-
-  @override
-  initState() {
-    _mutationObserver = html.MutationObserver((List<dynamic> mutations, html.MutationObserver observer) => _translateHack());
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => _translateHack());
-
-    super.initState();
-  }
-
-  void _translateHack() async {
-    List<html.Node> nodes = html.window.document.getElementsByTagName("*");
-
-    for (html.Node node in nodes) {
-      _mutationObserver.observe(node, childList: true);
-      html.Element el = node as html.Element;
-      if (el.style.transform.isEmpty) continue;
-      if (!el.style.transform.contains("\.")) continue;
-      //print(el.style.transform + " --> " + _normalizeTranslate(el.style.transform));
-      el.style.transform = _normalizeTranslate(el.style.transform);
-    }
-  }
-
-  String _normalizeTranslate(String value) {
-    if (value.length > 12) {
-      if (value.substring(0, 10) == "translate(") {
-        String p = value.replaceFirst("translate(", "").replaceFirst(")", "").replaceAll("px", "");
-        List<String> m = p.split(", ");
-        return "translate(" + (double.parse(m[0]).toInt()).toString() + "px, " + (double.parse(m[1]).toInt()).toString() + "px)";
-      } else if (value.substring(0, 12) == "translate3d(") {
-        String p = value.replaceFirst("translate3d(", "").replaceFirst(")", "").replaceAll("px", "");
-        List<String> m = p.split(", ");
-        return "translate3d(" + (double.parse(m[0]).toInt()).toString() + "px, " + (double.parse(m[1]).toInt()).toString() + "px, " + double.parse(m[2]).toInt().toString() + "px)";
-      }
-    }
-    return value;
   }
 }

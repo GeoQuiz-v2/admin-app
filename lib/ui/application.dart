@@ -65,26 +65,23 @@ class TabTemplate extends StatelessWidget {
     return Center(
       child: Container(
         padding: EdgeInsets.all(Values.screenMargin),
-        child: ScrollConfiguration(
-          behavior: BasicScrollWithoutGlow(),
-          child: ListView(
-            children: <Widget>[
-              SizedBox(height: Values.normalSpacing,),
-              Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: Values.blockSpacing,
-                children: [
-                  DefaultTextStyle(
-                    style: Theme.of(context).textTheme.subtitle,
-                    child: title,
-                  ),
-                  if (action != null)
-                    action,
-                ]
-              ),
-              content
-            ],
-          ),
+        child: ListView(
+          children: <Widget>[
+            SizedBox(height: Values.normalSpacing,),
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: Values.blockSpacing,
+              children: [
+                DefaultTextStyle(
+                  style: Theme.of(context).textTheme.subtitle,
+                  child: title,
+                ),
+                if (action != null)
+                  action,
+              ]
+            ),
+            content
+          ],
         ),
       ),
     );

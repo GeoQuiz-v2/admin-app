@@ -25,27 +25,35 @@ class _QuestionListWidgetState extends State<QuestionListWidget> {
   final questionsPerPage = 10;
   int pageNumber = 1;
   bool onlyQuestionsWithProblems = false;
+  
 
   @override
   Widget build(BuildContext context) {
     return Consumer<DatabaseProvider>(
       builder: (context, provider, child) {
-
         String currentSelectedThemeId = provider.currentSelectedTheme?.id;
         int problems = 0;
-        List<Question> questions = [];
+        List<Question> questions = [], questionsDisplayed = [];
         if (currentSelectedThemeId != null) {
           List<Question> allQuestions = provider.questions.where((q) => q.themeId == currentSelectedThemeId ).toList();
+          allQuestions.sort((q1, q2) {
+            var comp = q1.difficulty.compareTo(q2.difficulty);
+            if (comp == 0)
+              comp = q1.entitled.compareTo(q2.entitled);
+            return comp;
+          });
           List<Question> questionWithProblems = allQuestions.where((q) => q.incorrectQuestionFormat).toList();
           problems = questionWithProblems.length;
           questions = onlyQuestionsWithProblems ? questionWithProblems : allQuestions;
+          var indexBegin = (pageNumber - 1) * 10;
+          questionsDisplayed = questions.getRange(indexBegin, min(indexBegin + 10, questions.length)).toList();
         }
         return Column(
           key: GlobalKey(),
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SubTitle(
-              "Questions", 
+              "Questions (${questions.length})", 
               action: problems == 0 ? null : FlatButton.icon(
                 textColor: onlyQuestionsWithProblems ? AppColors.onError : AppColors.error,
                 label: Text("Problems ($problems)"),
@@ -60,12 +68,13 @@ class _QuestionListWidgetState extends State<QuestionListWidget> {
             ? Text("Select a theme to view questions.", style: TextStyle(color: AppColors.textColorLight))
             : ListView.builder(
                 shrinkWrap: true,
-                itemCount: questions == null ? 0 : min(questions.length, 10),
+                itemCount: questions == null ? 0 : questionsDisplayed.length,
                 physics: ClampingScrollPhysics(),
-                itemBuilder: (context, position) => QuestionItem(question: questions[position],),
+                itemBuilder: (context, position) => QuestionItem(question: questionsDisplayed[position],),
               ),
             SizedBox(height: Values.normalSpacing),
-            Row(
+            Wrap(
+              spacing: 10,
               children: List.generate((questions.length / questionsPerPage).ceil(), (i) => i + 1).map((i) => 
                 pageNumberWidget(i)
               ).toList(),

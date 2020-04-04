@@ -24,13 +24,15 @@ class QuizTheme extends Model {
   String title;
   int color;
   String entitled;
+  int order;
 
   QuizTheme({
     String id,
     @required this.rawSVG,
     @required this.title,
     @required this.color,
-    @required this.entitled
+    @required this.entitled,
+    @required this.order,
   }) : super(id: id);
 
   QuizTheme.fromJSON({String id, @required Map<String, Object> data}) : super(id: id) {
@@ -38,6 +40,7 @@ class QuizTheme extends Model {
     this.title = data["title"];
     this.color = data["color"];
     this.entitled = data["entitled"];
+    this.order = data["order"];
   }
 
   Map<String, Object> toJson() => {
@@ -46,6 +49,7 @@ class QuizTheme extends Model {
     "icon": rawSVG,
     "color": color,
     "entitled": entitled,
+    "order" : order,
   };
 }
 

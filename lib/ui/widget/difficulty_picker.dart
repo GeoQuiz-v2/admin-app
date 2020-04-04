@@ -4,13 +4,11 @@ import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/ui/widget/icon_button.dart';
 
 
-class DifficultyPicker extends FormField<int> {
-  static final min = 1;
-  static final max = 5;
+class IntegerSelector extends FormField<int> {
 
-  final DifficultyPickerController controller;
+  final IntegerSelectorController controller;
   
-  DifficultyPicker({@required this.controller}) : super(
+  IntegerSelector({@required this.controller}) : super(
     builder: (state) => _DifficultyPickerWidget(
       onIncrease : () {
         (state as _DifficultyPickerState).increase();
@@ -19,8 +17,6 @@ class DifficultyPicker extends FormField<int> {
         (state as _DifficultyPickerState).decrease();
       },
       controller: controller,
-      min: min,
-      max: max,
       state: state,
     ),
     validator: (_) => controller.value != null && controller.value >=1 && controller.value <= 5 ? null : "invalid"
@@ -36,10 +32,8 @@ class DifficultyPicker extends FormField<int> {
 
 class _DifficultyPickerWidget extends StatefulWidget {
 
-  final int min;
-  final int max;
 
-  final DifficultyPickerController controller;
+  final IntegerSelectorController controller;
 
   final Function onIncrease;
   final Function onDecrease;
@@ -47,7 +41,7 @@ class _DifficultyPickerWidget extends StatefulWidget {
   final _DifficultyPickerState state;
 
 
-  _DifficultyPickerWidget({this.onIncrease, this.onDecrease, this.controller, this.min = 0, this.max = 100, this.state});
+  _DifficultyPickerWidget({this.onIncrease, this.onDecrease, this.controller, this.state});
 
   @override
   _DifficultyPickerWidgetState createState() => _DifficultyPickerWidgetState();
@@ -70,7 +64,7 @@ class _DifficultyPickerWidgetState extends State<_DifficultyPickerWidget> {
             RoundedIconButton(
               icon: Icon(Icons.remove, size: iconSize, color: AppColors.textColorLight,), 
               onPressed: () {
-                if (difficulty != null && difficulty > widget.min) {
+                if (difficulty != null && difficulty > 0) {
                   setState(() => widget.onDecrease());
                 }
               }
@@ -79,9 +73,7 @@ class _DifficultyPickerWidgetState extends State<_DifficultyPickerWidget> {
             RoundedIconButton(
               icon: Icon(Icons.add, size: iconSize, color: AppColors.textColorLight,), 
               onPressed: () {
-                if (difficulty == null || difficulty < widget.max) {
-                  setState(() => widget.onIncrease());
-                }
+                setState(() => widget.onIncrease());
               }, 
             ),
           ]
@@ -97,7 +89,7 @@ class _DifficultyPickerWidgetState extends State<_DifficultyPickerWidget> {
 class _DifficultyPickerState extends FormFieldState<int> {
 
   @override
-  DifficultyPicker get widget => super.widget;
+  IntegerSelector get widget => super.widget;
 
 
 
@@ -127,8 +119,8 @@ class _DifficultyPickerState extends FormFieldState<int> {
 }
 
 
-class DifficultyPickerController {
+class IntegerSelectorController {
   int value;
 
-  DifficultyPickerController({int selectedValue}) : value = selectedValue;
+  IntegerSelectorController({int selectedValue}) : value = selectedValue;
 }

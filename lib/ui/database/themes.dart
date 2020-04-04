@@ -5,6 +5,7 @@ import 'package:geoquizadmin/models/database_provider.dart';
 import 'package:geoquizadmin/res/colors.dart';
 import 'package:geoquizadmin/res/values.dart';
 import 'package:geoquizadmin/ui/widget/color_picker.dart';
+import 'package:geoquizadmin/ui/widget/difficulty_picker.dart';
 import 'package:geoquizadmin/ui/widget/form_dialog.dart';
 import 'package:geoquizadmin/ui/widget/icon_button.dart';
 import 'package:geoquizadmin/ui/widget/subtitle.dart';
@@ -28,10 +29,12 @@ class ThemeListWidget extends StatelessWidget {
       children: <Widget>[
         SubTitle("Themes"),
         Consumer<DatabaseProvider>(
-          builder: (context, provider, _) => 
-            provider.themes == null 
-            ? Container()
-            : ListView(
+          builder: (context, provider, _) {
+            if (provider.themes == null)
+             return Container();
+            
+            provider.themes.sort((t1, t2) => t1.order.compareTo(t2.order));
+            return ListView(
               key: GlobalKey(),
               shrinkWrap: true,
               children: [
@@ -40,7 +43,9 @@ class ThemeListWidget extends StatelessWidget {
                   theme: t,
                 )).toList(),
               ]
-            )
+            );
+          }
+           
         ),
       ],
     );
@@ -74,7 +79,9 @@ class _ThemeItemState extends State<ThemeItem> {
   TextEditingController _svgController = TextEditingController();
   TextEditingController _titleController = TextEditingController();
   TextEditingController _entitledController = TextEditingController();
+  IntegerSelectorController _orderController = IntegerSelectorController();
   int _colorController;
+  
 
   bool _inProgress = false;
 
@@ -90,10 +97,13 @@ class _ThemeItemState extends State<ThemeItem> {
   @override
   void initState() {
     super.initState();
-    _titleController.text = widget.theme?.title;
-    _svgController.text = widget.theme?.rawSVG;
-    _entitledController.text = widget.theme?.entitled;
-    _colorController = widget.theme?.color;
+    if (widget.theme != null) {
+      _titleController.text = widget.theme.title;
+      _svgController.text = widget.theme.rawSVG;
+      _entitledController.text = widget.theme.entitled;
+      _colorController = widget.theme.color;
+      _orderController.value = widget.theme.order;
+    }
   }
 
 
@@ -154,6 +164,12 @@ class _ThemeItemState extends State<ThemeItem> {
                   decoration: InputDecoration.collapsed(hintText: "Entitled"),
                   validator: basicValidator,
                 ),
+              ),
+
+              SizedBox(width: Values.normalSpacing,),
+
+              IntegerSelector(
+                controller: _orderController,
               ),
 
               SizedBox(width: Values.normalSpacing,),
@@ -226,6 +242,7 @@ class _ThemeItemState extends State<ThemeItem> {
       entitled: _entitledController.text,
       color: _colorController,
       rawSVG: _svgController.text,
+      order: _orderController.value
     );
   }
 }

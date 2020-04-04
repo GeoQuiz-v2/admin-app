@@ -134,7 +134,7 @@ class _QuestionItemState extends State<QuestionItem> {
   TypePickerController entitledTypeController;
   List<TextEditingController> answerControllers;
   TypePickerController answerTypesController;
-  DifficultyPickerController difficultyController;
+  IntegerSelectorController difficultyController;
 
   @override
   void initState() {
@@ -142,7 +142,7 @@ class _QuestionItemState extends State<QuestionItem> {
     entitledController = TextEditingController(text: widget.question?.entitled);
     entitledTypeController = TypePickerController(initialType: widget.question?.entitledType);
     answerTypesController = TypePickerController(initialType: widget.question?.answersType);
-    difficultyController = DifficultyPickerController(selectedValue: widget.question?.difficulty);
+    difficultyController = IntegerSelectorController(selectedValue: widget.question?.difficulty);
     answerControllers = [];
     widget.question?.answers?.forEach((q) => answerControllers.add(TextEditingController(text: q)));
     while (answerControllers.length < minumumNumberOfQuestions)
@@ -211,7 +211,7 @@ class _QuestionItemState extends State<QuestionItem> {
                   ],
                 )
               ),
-              DifficultyPicker(controller: difficultyController),
+              IntegerSelector(controller: difficultyController),
 
               SizedBox(width: 10),
 

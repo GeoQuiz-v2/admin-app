@@ -259,7 +259,6 @@ class _QuestionItemState extends State<QuestionItem> {
   }
 
   onAddQuestion(context) {
-    print(entitledTypeController.value);
     if (_formKey.currentState.validate()) {
       handleProviderFunction(context, Provider.of<DatabaseProvider>(context, listen: false).addQuestion, getQuestionFromForm());
     }

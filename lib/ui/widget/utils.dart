@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -35,6 +37,21 @@ class ColorTransformation {
 }
 
 
+class RandomColorGenerator {
+  static List<Color> _colors = [
+    Colors.red, Colors.teal, Colors.blue, Colors.brown, 
+    Colors.cyan, Colors.green, Colors.indigo, Colors.lime, Colors.orange, 
+    Colors.pink, Colors.purple
+  ];
+  static int _last = 0;
+  
+  static Color generate() {
+    _last += 1;
+    return _colors.elementAt(_last);
+  }
+}
+
+
 class SnackBarFactory {
 
   SnackBarFactory._();
@@ -62,13 +79,3 @@ class SnackBarFactory {
   }
 }
 
-
-/// As flutter_svg does NOT support web for now : https://github.com/dnfield/flutter_svg/issues/173
-class SvgPictureForWeb extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      
-    );
-  }
-}

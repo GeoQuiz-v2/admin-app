@@ -23,13 +23,14 @@ dependencies:
   cupertino_icons: ^0.1.2
   url_launcher: ^5.4.1
   provider: ^4.0.1
-  firebase: ^7.1.0
-  firebase_core: ^0.4.3+1
-  firebase_auth: ^0.15.3
-  google_sign_in: ^4.1.1
-  google_sign_in_web: ^0.8.0
+  firebase: ^7.3.0
+  firebase_core: ^0.4.5
+  firebase_auth: ^0.16.1
+  google_sign_in: ^4.5.1
   tinycolor: ^1.0.2
   http: ^0.12.0+4
+  positioned_tap_detector: ^1.0.3
+  websafe_svg: ^1.1.0
   
 
 dev_dependencies:
@@ -54,6 +55,7 @@ flutter:
     - assets/images/playconsole.png
     - assets/images/admob.png
     - assets/images/github.png
+    - assets/images/worldmap.svg
 
   fonts:
     - family: Roboto

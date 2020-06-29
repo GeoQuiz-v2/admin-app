@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:geoquizadmin/ui/database/language.dart';
 import 'package:geoquizadmin/ui/database/questions.dart';
 import 'package:geoquizadmin/ui/database/themes.dart';
+import 'package:geoquizadmin/ui/database/tools.dart';
 
 
 class DatabaseScreen extends StatelessWidget {
@@ -12,9 +13,8 @@ class DatabaseScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SupportedLanguageWidget(),
-
         ThemeListWidget(),
-        
+        ToolsWidget(),
         QuestionListWidget(),
       ],
     );

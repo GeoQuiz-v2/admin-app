@@ -1,18 +1,6 @@
+import 'package:admin/env.dart';
 import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
-import 'package:geoquizadmin/env.dart';
-import 'package:geoquizadmin/models/auth_notifier.dart';
-import 'package:geoquizadmin/models/database_provider.dart';
-import 'package:geoquizadmin/res/colors.dart';
-import 'package:geoquizadmin/res/values.dart';
-import 'package:geoquizadmin/ui/application.dart';
-import 'package:geoquizadmin/ui/authentication/authentication.dart';
-import 'package:geoquizadmin/ui/dashboard/dashboard.dart';
-import 'package:geoquizadmin/ui/database/database.dart';
-import 'package:geoquizadmin/ui/database/publish_database.dart';
-import 'package:provider/provider.dart';
-
-
 
 void main() {
   initializeApp(
@@ -24,81 +12,66 @@ void main() {
     messagingSenderId: messagingSenderId,
     appId: appId,
   );
-
   
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthenticationNotifier()),
-        ChangeNotifierProvider(create: (_) => DatabaseProvider())
-      ],
-      child: GeoQuizApp(),
-    )
-  );
+  runApp(MyApp());
 }
 
-
-class GeoQuizApp extends StatelessWidget {
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        backgroundColor: Colors.white,
-        scaffoldBackgroundColor: Colors.white,
-        primaryColor: AppColors.primary,
-        colorScheme: ColorScheme(
-          primary: AppColors.primary,
-          secondary: AppColors.primary,
-          primaryVariant: AppColors.primary,
-          secondaryVariant: AppColors.primary,
-          error: AppColors.error,
-          background: Colors.white,
-          onBackground: Colors.black,
-          onError: Colors.white,
-          onPrimary: Colors.white,
-          onSecondary: Colors.white,
-          onSurface: Colors.black,
-          surface: Colors.white,
-
-          brightness: Brightness.light,
-        ),
-        fontFamily: "Roboto",
-        textTheme: TextTheme(
-          title: TextStyle(fontSize: Values.titleSize, color: AppColors.primary),
-          subtitle: TextStyle(fontSize: Values.pageTitleSize, fontWeight: Values.weightBlack),
-          headline: TextStyle(fontSize: Values.dialogTitleSize, fontWeight: Values.weightBold),
-          body1: TextStyle(fontSize: 16)
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          errorStyle: TextStyle(fontSize: 12, color: AppColors.error)
-        ),
-        buttonTheme: ButtonThemeData(                
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Values.radius),),
-          minWidth: 0
-        )
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Consumer<AuthenticationNotifier>(
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
 
-        builder: (context , provider, _) {
-          return !provider.isInit || provider.user == null
-            ? AuthenticationScreen()
-            : ApplicationView(
-              tabs: <TabTemplate>[
-                TabTemplate(
-                  title: Text("Database"),
-                  action: PublishDatabase(),
-                  content: DatabaseScreen(),
-                ),
-                TabTemplate(
-                  title: Text("Dashaboard"),
-                  content: DashboardScreen(),
-                ),
-              ],
-            );
-        }
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
       ),
     );
   }

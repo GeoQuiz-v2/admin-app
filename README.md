@@ -1,4 +1,4 @@
-# geoquizadmin
+# admin
 
 A new Flutter project.
 

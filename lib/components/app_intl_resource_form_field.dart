@@ -2,8 +2,8 @@ import 'package:admin/utils/intl_resource.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class IntlResourceFormField extends FormField<IntlResource> {
 
+class IntlResourceFormField extends FormField<IntlResource> {
   final IntlResourceEditingController controller;
 
   IntlResourceFormField({
@@ -15,7 +15,6 @@ class IntlResourceFormField extends FormField<IntlResource> {
     key: key,
     validator: validator,
     builder: (FormFieldState<IntlResource> field) {
-      // final _IntlResourceFormFieldState state = field as _IntlResourceFormFieldState;
       return Column(
         children: [
           Row(
@@ -52,8 +51,6 @@ class IntlResourceFormField extends FormField<IntlResource> {
             ],
           )).toList(),
         ]
-        
-
       );
     }
   );
@@ -64,11 +61,8 @@ class IntlResourceFormField extends FormField<IntlResource> {
 
 
 class _IntlResourceFormFieldState extends FormFieldState<IntlResource> {
-  // IntlResourceEditingController controller;
-
   @override
   IntlResourceFormField get widget => super.widget as IntlResourceFormField;
-  
 
   @override
   void initState() {

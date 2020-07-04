@@ -8,33 +8,52 @@ class IntlResourceFormField extends FormField<IntlResource> {
 
   IntlResourceFormField({
     Key key,
-    IntlResource initialValue,
     Function(IntlResource resource) validator,
     @required List<String> languages,
     @required this.controller,
   }) : super(
     key: key,
     validator: validator,
-    initialValue: initialValue??IntlResource(resource: {}),
     builder: (FormFieldState<IntlResource> field) {
       // final _IntlResourceFormFieldState state = field as _IntlResourceFormFieldState;
       return Column(
-        children: languages.map((l) => Row(
-          children: [
-            Text(l),
-            Expanded(
-              flex: 1,
-              child: TextField(
-                controller: TextEditingController(
-                  text: controller.resource.resource[l]??"",
+        children: [
+          Row(
+            children: [
+              Expanded(flex: 1, child: Text("WikiCode")),
+              Expanded(
+                flex: 10,
+                child: TextField(
+                  controller: TextEditingController(
+                    text: controller.resource.wikidataCode??"",
+                  ),
+                  onChanged: (v) => controller.resource.wikidataCode = v,
                 ),
-                onChanged: (v) {
-                  controller.resource.resource[l] = v;
-                },
+              )
+            ],
+          ),
+          ...languages.map((l) => Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Text(l)
               ),
-            ),
-          ],
-        )).toList(),
+              Expanded(
+                flex: 10,
+                child: TextField(
+                  controller: TextEditingController(
+                    text: controller.resource.resource[l]??"",
+                  ),
+                  onChanged: (v) {
+                    controller.resource.resource[l] = v;
+                  },
+                ),
+              ),
+            ],
+          )).toList(),
+        ]
+        
+
       );
     }
   );

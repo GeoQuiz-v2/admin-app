@@ -24,7 +24,7 @@ class ThemesListWidget extends StatefulWidget {
     @required this.supportedLanguages,
     @required this.themes,
   }) : super(key: key) {
-    themes?.sort((t1, t2) => t1.priority.compareTo(t2.priority));
+    // themes?.sort((t1, t2) => t1?.priority?.compareTo(t2.priority)??-1);
   }
 
   @override
@@ -131,23 +131,29 @@ class ThemeitemWidget extends StatelessWidget {
         ),
         Expanded(
           flex: 4,
-          child: Column(children: supportedLanguages.map((l) => 
-            Text(theme.name.resource[l.isoCode2]??"")
-          ).toList(),),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: supportedLanguages.map((l) => 
+              Text(theme.name.resource[l.isoCode2]??"")
+            ).toList(),
+          ),
         ),
         Expanded(
           flex: 4,
-          child: Text(theme.color.toString()),
+          child: Text(theme.color?.toString()??""),
         ),
         Expanded(
           flex: 10,
-          child: Column(children: supportedLanguages.map((l) => 
-            Text(theme.entitled.resource[l.isoCode2]??"")
-          ).toList(),),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: supportedLanguages.map((l) => 
+              Text(theme.entitled.resource[l.isoCode2]??"")
+            ).toList(),
+          ),
         ),
         Expanded(
-          flex: 1,
-          child: Text(theme.priority.toString()),
+          flex: 2,
+          child: Text(theme.priority?.toString()??""),
         ),
         Expanded(
           flex: 2,
@@ -193,7 +199,7 @@ class ThemeEditionDialog extends AppModelEditionDialog {
 
 class _ThemeEditionDialogState extends AppModelEditionDialogState {
   final _formKey = GlobalKey<FormState>();
-  int colorController;
+  ColorEditingController colorController;
   IntegerSelectorController priorityController;
   TextEditingController iconController;
   IntlResourceEditingController nameController;
@@ -204,7 +210,7 @@ class _ThemeEditionDialogState extends AppModelEditionDialogState {
   void initState() {
     super.initState();
     var theme = widget.initialModel as ThemeModel;
-    colorController = theme?.color;
+    colorController = ColorEditingController(color: theme?.color);
     priorityController = IntegerSelectorController(selectedValue: theme?.priority);
     iconController = TextEditingController(text: theme?.svgIcon);
     nameController = IntlResourceEditingController(resource: theme?.name);
@@ -234,20 +240,20 @@ class _ThemeEditionDialogState extends AppModelEditionDialogState {
               languages: ["fr", "en"],
             ),
             TextFormField(
-              controller: iconController
+              controller: iconController,
+              validator: (v) => v.isEmpty ? "NON" : null
             ),
-            // ColorPicker(
-            //   initialColor: colorController,
-            //   validator: (c) => c == null || c.toString().length != 10 ? "Invalid color" : null,
-            //   onSaved: (c) => colorController = c,
-            // ),
+            ColorPicker(
+              controller: colorController,
+              // validator: (c) => c == null || c.toString().length != 10 ? "Invalid color" : null,
+            ),
             IntlResourceFormField(
               controller: entitledController,
               languages: ["fr", "en"],
             ),
-            // IntegerSelector(
-            //   controller: priorityController,
-            // ),
+            IntegerSelector(
+              controller: priorityController,
+            ),
           ],
         ),
       )
@@ -260,7 +266,7 @@ class _ThemeEditionDialogState extends AppModelEditionDialogState {
         id: widget.initialModel?.id,
         entitled: entitledController.resource,
         name: nameController.resource,
-        color: colorController,
+        color: colorController.color,
         priority: priorityController.value,
         svgIcon: iconController.text,
       );

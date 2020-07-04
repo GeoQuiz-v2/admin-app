@@ -1,8 +1,8 @@
 import 'package:admin/components/app_bar.dart';
 import 'package:admin/components/app_button.dart';
 import 'package:admin/pages/database/database_provider.dart';
-import 'package:admin/pages/database/languages.dart';
-import 'package:admin/pages/database/themes.dart';
+import 'package:admin/pages/database/language_list_widget.dart';
+import 'package:admin/pages/database/theme_list_widget.dart';
 import 'package:admin/services/impl/cloud_firestore_service.dart';
 import 'package:admin/services/impl/cloud_storage_service.dart';
 import 'package:flutter/material.dart';

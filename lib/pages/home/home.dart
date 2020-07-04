@@ -1,5 +1,5 @@
 import 'package:admin/components/app_bar.dart';
-import 'package:admin/pages/database/database.dart';
+import 'package:admin/pages/database/database_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

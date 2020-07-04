@@ -1,7 +1,7 @@
 import 'package:admin/env.dart';
 import 'package:admin/pages/authentication/authentication.dart';
 import 'package:admin/pages/authentication/authentication_provider.dart';
-import 'package:admin/pages/database/database.dart';
+import 'package:admin/pages/database/database_page.dart';
 import 'package:firebase/firebase.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

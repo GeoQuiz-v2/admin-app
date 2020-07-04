@@ -1,9 +1,13 @@
 import 'package:admin/env.dart';
-import 'package:firebase/firebase.dart';
+import 'package:admin/pages/authentication/authentication.dart';
+import 'package:admin/pages/authentication/authentication_provider.dart';
+import 'package:admin/pages/database/database.dart';
+import 'package:firebase/firebase.dart' as firebase;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  initializeApp(
+  firebase.initializeApp(
     apiKey: apiKey,
     authDomain: authDomain,
     databaseURL: databaseURL,
@@ -13,10 +17,17 @@ void main() {
     appId: appId,
   );
   
-  runApp(MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<AuthenticationProvider>(
+        create: (context) => AuthenticationProvider()
+      ),
+    ],
+    child: QuizAdminApp()
+  ));
 }
 
-class MyApp extends StatelessWidget {
+class QuizAdminApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,54 +35,18 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        pageTransitionsTheme: PageTransitionsTheme(builders: {
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.linux: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
+        })
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+      home: Consumer<AuthenticationProvider>(
+        builder: (context, authProvider, __) => authProvider.user == null
+          ? AuthenticationPage()
+          : DatabasePage()
       ),
     );
   }

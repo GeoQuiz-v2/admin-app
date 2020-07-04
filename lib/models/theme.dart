@@ -1,8 +1,8 @@
+import 'package:admin/models/model.dart';
 import 'package:admin/utils/intl_resource.dart';
 import 'package:flutter/foundation.dart';
 
-class ThemeModel {
-  String id;
+class ThemeModel extends Model {
   IntlResource name;
   IntlResource entitled;
   String svgIcon;
@@ -10,11 +10,11 @@ class ThemeModel {
   int priority;
 
   ThemeModel({
-    this.id,
+    String id,
     @required this.svgIcon,
     @required this.name,
     @required this.color,
     @required this.entitled,
     @required this.priority
-  })
+  }) : super(id);
 }

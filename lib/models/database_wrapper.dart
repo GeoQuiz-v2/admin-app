@@ -4,13 +4,13 @@ import 'package:admin/models/theme.dart';
 import 'package:flutter/foundation.dart';
 
 class DatabaseWrapper {
-  List<LanguageModel> languages;
-  List<QuestionModel> questions;
-  List<ThemeModel> themes;
+  Map<String, LanguageModel> languages;
+  Map<String, QuestionModel> questions;
+  Map<String, ThemeModel> themes;
 
   DatabaseWrapper({
     @required this.languages,
     @required this.questions,
     @required this.themes,
-  })
+  });
 }

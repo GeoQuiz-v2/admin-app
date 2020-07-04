@@ -7,7 +7,7 @@ class IntlResource {
   IntlResource({
     this.wikidataCode,
     @required resource,
-  })
+  });
 }
 
 enum ResourceType {

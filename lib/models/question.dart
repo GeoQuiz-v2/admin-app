@@ -1,10 +1,10 @@
-import 'package:admin/models/theme.dart';
+import 'package:admin/models/model.dart';
 import 'package:admin/utils/intl_resource.dart';
 import 'package:flutter/foundation.dart';
 
-class QuestionModel {
+class QuestionModel extends Model {
   String id;
-  ThemeModel theme;
+  String theme;
   ResourceType entitledType;
   IntlResource entitled;
   ResourceType answersType;
@@ -12,12 +12,12 @@ class QuestionModel {
   int difficulty;
 
   QuestionModel({
-    this.id,
+    String id,
     @required this.theme,
     @required this.entitledType,
     @required this.entitled,
     @required this.answersType,
     @required this.answers,
     @required this.difficulty,
-  })
+  }) : super(id);
 }

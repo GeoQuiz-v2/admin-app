@@ -1,5 +1,6 @@
 import 'package:admin/models/database_wrapper.dart';
 import 'package:admin/models/language_model.dart';
+import 'package:admin/models/theme_model.dart';
 import 'package:admin/services/database_service.dart';
 import 'package:admin/services/storage_service.dart';
 import 'package:flutter/widgets.dart';
@@ -36,6 +37,18 @@ class DatabaseProvider extends ChangeNotifier {
       modelId = model.id;
     }
     models.languages[modelId] = model;
+    notifyListeners();
+  }
+
+  Future saveTheme(ThemeModel model) async {
+    String modelId;
+    if (model.id == null) {
+      modelId = await databaseService.themesDao.create(model);
+    } else {
+      await databaseService.themesDao.update(model);
+      modelId = model.id;
+    }
+    models.themes[modelId] = model;
     notifyListeners();
   }
 }

@@ -18,6 +18,7 @@ dependencies:
   firebase_auth: ^0.16.1
   google_sign_in: ^4.5.1
   websafe_svg: ^1.1.0
+  tinycolor: ^1.0.2
 
 dev_dependencies:
   flutter_test:

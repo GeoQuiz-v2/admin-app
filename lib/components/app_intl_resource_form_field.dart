@@ -1,0 +1,70 @@
+import 'package:admin/utils/intl_resource.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+class IntlResourceFormField extends FormField<IntlResource> {
+
+  final IntlResourceEditingController controller;
+
+  IntlResourceFormField({
+    Key key,
+    IntlResource initialValue,
+    Function(IntlResource resource) validator,
+    @required List<String> languages,
+    @required this.controller,
+  }) : super(
+    key: key,
+    validator: validator,
+    initialValue: initialValue??IntlResource(resource: {}),
+    builder: (FormFieldState<IntlResource> field) {
+      // final _IntlResourceFormFieldState state = field as _IntlResourceFormFieldState;
+      return Column(
+        children: languages.map((l) => Row(
+          children: [
+            Text(l),
+            Expanded(
+              flex: 1,
+              child: TextField(
+                controller: TextEditingController(
+                  text: controller.resource.resource[l]??"",
+                ),
+                onChanged: (v) {
+                  controller.resource.resource[l] = v;
+                },
+              ),
+            ),
+          ],
+        )).toList(),
+      );
+    }
+  );
+
+  @override
+  _IntlResourceFormFieldState createState() => _IntlResourceFormFieldState();
+}
+
+
+class _IntlResourceFormFieldState extends FormFieldState<IntlResource> {
+  // IntlResourceEditingController controller;
+
+  @override
+  IntlResourceFormField get widget => super.widget as IntlResourceFormField;
+  
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.controller.resource == null) {
+      widget.controller.resource = IntlResource(resource: {});
+    }
+    if (widget.controller.resource.resource == null) {
+      widget.controller.resource.resource = {};
+    }
+  }
+}
+
+
+class IntlResourceEditingController {
+  IntlResource resource;
+  IntlResourceEditingController({this.resource});
+}

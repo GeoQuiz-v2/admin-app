@@ -5,7 +5,7 @@ import 'package:admin/models/theme_model.dart';
 import 'package:admin/utils/intl_resource.dart';
 
 
-abstract class NoSqlAdapter<T extends Model> {
+abstract class NoSqlAdapter<T> {
   T from(Map<String, Object> json);
   Map<String, Object> to(T model);
 }
@@ -48,21 +48,38 @@ class ThemeAdapter implements NoSqlAdapter<ThemeModel> {
     var icon = json['icon'];
     var priority = json['order'];
     var color = json['color'];
-    var nameRes = (json['title'] as Map).cast<String, String>();
-    var name = IntlResource(resource: nameRes);
-    var entitledRes = (json['entitled'] as Map).cast<String, String>();
-    var entitled = IntlResource(resource: entitledRes);
-    return ThemeModel(id: id, svgIcon: icon, priority: priority, name: name, color: color, entitled: entitled);
+    var name = IntlResourceAdapter().from(json['title']);
+    var entitled = IntlResourceAdapter().from(json['entitled']);
+    var a = ThemeModel(id: id, svgIcon: icon, priority: priority, name: name, color: color, entitled: entitled);
+    return a;
   }
 
   @override
   Map<String, Object> to(ThemeModel model) {
     return {
-      'entitled': model.entitled.resource,
+      'entitled': IntlResourceAdapter().to(model.entitled),
       'icon': model.svgIcon,
       'order': model.priority,
-      'title': model.name,
+      'title': IntlResourceAdapter().to(model.name),
       'color': model.color
+    };
+  }
+}
+
+
+class IntlResourceAdapter implements NoSqlAdapter<IntlResource> {
+  @override
+  IntlResource from(Map<String, Object> data) {
+    var res = (data['res'] as Map).cast<String, String>();
+    var wikiCode = data['wikiCode'];
+    return IntlResource(resource: res, wikidataCode: wikiCode);
+  }
+
+  @override
+  Map<String, Object> to(IntlResource model) {
+    return {
+      'res': model.resource,
+      'wikiCode': model.wikidataCode
     };
   }
 }

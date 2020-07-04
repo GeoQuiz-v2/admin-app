@@ -1,6 +1,7 @@
 import 'package:admin/components/app_button.dart';
-import 'package:admin/components/app_dialog.dart';
+import 'package:admin/components/app_model_edition_dialog.dart';
 import 'package:admin/components/app_subtitle.dart';
+import 'package:admin/components/app_window.dart';
 import 'package:admin/models/language_model.dart';
 import 'package:admin/pages/database/database_provider.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class LanguageListWidget extends StatelessWidget {
             AppButton(
               child: Text("Add"),
               style: AppButtonStyle.ligth,
-              onPressed: () => LanguageEditionDialog.show(context, databaseProvider),
+              onPressed: () => LanguageEditionDialog(databaseProvider: databaseProvider,)..show(context),
             )
           ],
         ),
@@ -38,7 +39,7 @@ class LanguageListWidget extends StatelessWidget {
           : Row(
               children: languages.map((l) => InkWell(
                 child: Text(l.isoCode2),
-                onTap: () => LanguageEditionDialog.show(context, databaseProvider, l),
+                onTap: () => LanguageEditionDialog(initialLanguage: l, databaseProvider: databaseProvider)..show(context),
               )).toList(),
             ),
         ),
@@ -49,39 +50,29 @@ class LanguageListWidget extends StatelessWidget {
 
 
 
-class LanguageEditionDialog extends StatefulWidget {
-  final DatabaseProvider databaseProvider;
-  final LanguageModel initialLanguage;
+class LanguageEditionDialog extends AppModelEditionDialog {
 
   LanguageEditionDialog({
     Key key,
-    @required this.initialLanguage, 
-    @required this.databaseProvider
-  }) : super(key: key);
-
-  static show(context, databaseProvider, [LanguageModel languageModel]) {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: LanguageEditionDialog(
-          databaseProvider: databaseProvider,
-          initialLanguage: languageModel,
-        ),
-      ),
-    );
-  }
+    LanguageModel initialLanguage, 
+    @required DatabaseProvider databaseProvider
+  }) : super(
+    key: key,
+    initialModel: initialLanguage,
+    databaseProvider: databaseProvider
+  );
 
   @override
-  _LanguageEditionDialogState createState() => _LanguageEditionDialogState();
+  AppModelEditionDialogState createState() => _LanguageEditionDialogState();
 }
 
-class _LanguageEditionDialogState extends State<LanguageEditionDialog> {
+class _LanguageEditionDialogState extends AppModelEditionDialogState {
   TextEditingController codeIsoController;
 
   @override
   void initState() {
     super.initState();
-    codeIsoController = TextEditingController(text: widget.initialLanguage?.isoCode2);
+    codeIsoController = TextEditingController(text: (widget.initialModel as LanguageModel)?.isoCode2);
   }
 
   @override
@@ -90,15 +81,10 @@ class _LanguageEditionDialogState extends State<LanguageEditionDialog> {
     codeIsoController.dispose();
   }
 
-  dismiss() {
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    return AppDialog(
+    return AppWindow(
       title: Text("Add language"),
       content: Column(
         children: <Widget>[
@@ -116,7 +102,7 @@ class _LanguageEditionDialogState extends State<LanguageEditionDialog> {
 
   save() {
     var updatedLanguage = LanguageModel(
-      id: widget.initialLanguage?.id,
+      id: widget.initialModel?.id,
       isoCode2: codeIsoController.text
     );
     widget.databaseProvider.saveLanguage(updatedLanguage).then((_) {
@@ -127,3 +113,5 @@ class _LanguageEditionDialogState extends State<LanguageEditionDialog> {
     });
   }
 }
+
+

@@ -34,7 +34,8 @@ class DatabasePage extends StatelessWidget {
                   languages: databaseProvider.models?.languages?.values
                 ),
                 ThemesListWidget(
-                  themes: databaseProvider.models?.themes?.values
+                  themes: databaseProvider.models?.themes?.values?.toList(),
+                  supportedLanguages: databaseProvider.models?.languages?.values,
                 )
               ],
             ),

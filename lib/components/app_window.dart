@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 
-class AppDialog extends StatelessWidget {
+class AppWindow extends StatelessWidget {
   final Widget title;
   final Widget content;
   final Widget bottom;
 
-  AppDialog({
+  AppWindow({
     Key key,
     @required this.title,
     @required this.content,

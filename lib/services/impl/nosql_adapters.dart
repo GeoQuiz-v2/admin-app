@@ -1,7 +1,7 @@
-import 'package:admin/models/language.dart';
+import 'package:admin/models/language_model.dart';
 import 'package:admin/models/model.dart';
-import 'package:admin/models/question.dart';
-import 'package:admin/models/theme.dart';
+import 'package:admin/models/question_model.dart';
+import 'package:admin/models/theme_model.dart';
 import 'package:admin/utils/intl_resource.dart';
 
 
@@ -48,8 +48,10 @@ class ThemeAdapter implements NoSqlAdapter<ThemeModel> {
     var icon = json['icon'];
     var priority = json['order'];
     var color = json['color'];
-    var name = IntlResource(resource: json['entitled']);
-    var entitled = IntlResource(resource: json['entitled']);
+    var nameRes = (json['title'] as Map).cast<String, String>();
+    var name = IntlResource(resource: nameRes);
+    var entitledRes = (json['entitled'] as Map).cast<String, String>();
+    var entitled = IntlResource(resource: entitledRes);
     return ThemeModel(id: id, svgIcon: icon, priority: priority, name: name, color: color, entitled: entitled);
   }
 

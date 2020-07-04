@@ -1,6 +1,6 @@
 import 'package:admin/components/app_button.dart';
 import 'package:admin/components/app_subtitle.dart';
-import 'package:admin/models/theme.dart';
+import 'package:admin/models/theme_model.dart';
 import 'package:flutter/widgets.dart';
 
 class ThemesListWidget extends StatelessWidget {
@@ -31,7 +31,7 @@ class ThemesListWidget extends StatelessWidget {
         ? Text("Loading")
         : ListView(
             shrinkWrap: true,
-            children: themes.map((t) => Text("t.entitled.resource.values.first")).toList()
+            children: themes.map((t) => Text(t.name.resource.toString())).toList()
           )
       ],
     );

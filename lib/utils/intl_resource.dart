@@ -6,7 +6,7 @@ class IntlResource {
 
   IntlResource({
     this.wikidataCode,
-    @required resource,
+    @required this.resource,
   });
 }
 

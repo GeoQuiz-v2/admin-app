@@ -1,6 +1,6 @@
-import 'package:admin/models/language.dart';
-import 'package:admin/models/question.dart';
-import 'package:admin/models/theme.dart';
+import 'package:admin/models/language_model.dart';
+import 'package:admin/models/question_model.dart';
+import 'package:admin/models/theme_model.dart';
 import 'package:flutter/foundation.dart';
 
 class DatabaseWrapper {

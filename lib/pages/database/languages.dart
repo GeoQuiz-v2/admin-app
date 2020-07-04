@@ -1,7 +1,7 @@
 import 'package:admin/components/app_button.dart';
 import 'package:admin/components/app_dialog.dart';
 import 'package:admin/components/app_subtitle.dart';
-import 'package:admin/models/language.dart';
+import 'package:admin/models/language_model.dart';
 import 'package:admin/pages/database/database_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

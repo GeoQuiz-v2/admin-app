@@ -7,15 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  firebase.initializeApp(
-    apiKey: apiKey,
-    authDomain: authDomain,
-    databaseURL: databaseURL,
-    projectId: projectId,
-    storageBucket: storageBucket,
-    messagingSenderId: messagingSenderId,
-    appId: appId,
-  );
+  try {
+    firebase.app();
+    
+  } catch (e) {
+    firebase.initializeApp(
+      apiKey: apiKey,
+      authDomain: authDomain,
+      databaseURL: databaseURL,
+      projectId: projectId,
+      storageBucket: storageBucket,
+      messagingSenderId: messagingSenderId,
+      appId: appId,
+    );
+  }
+  
   
   runApp(MultiProvider(
     providers: [

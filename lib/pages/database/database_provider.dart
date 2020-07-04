@@ -1,5 +1,5 @@
 import 'package:admin/models/database_wrapper.dart';
-import 'package:admin/models/language.dart';
+import 'package:admin/models/language_model.dart';
 import 'package:admin/services/database_service.dart';
 import 'package:admin/services/storage_service.dart';
 import 'package:flutter/widgets.dart';

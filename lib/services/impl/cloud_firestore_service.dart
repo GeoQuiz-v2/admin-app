@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:admin/models/language.dart';
+import 'package:admin/models/language_model.dart';
 import 'package:admin/models/model.dart';
-import 'package:admin/models/question.dart';
-import 'package:admin/models/theme.dart';
+import 'package:admin/models/question_model.dart';
+import 'package:admin/models/theme_model.dart';
 import 'package:admin/services/database_service.dart';
 import 'package:admin/services/impl/nosql_adapters.dart';
 import 'package:admin/utils/dao.dart';

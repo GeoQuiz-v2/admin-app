@@ -57,9 +57,9 @@ class CloudStorageService implements IStorageService {
     var themesJson = <Map<String,Object>>[];
     for (var theme in themes) {
       themesJson.add({
-        'title': theme.name.resource[lang],
+        'title': theme.name[lang],
         'color': theme.color,
-        'entitled': theme.entitled.resource[lang],
+        'entitled': theme.entitled[lang],
         'order': theme.priority,
         'icon': theme.svgIcon,
       });
@@ -73,9 +73,9 @@ class CloudStorageService implements IStorageService {
       questionsJson.add({
         'id': question.id,
         'theme': question.theme,
-        'entitled': question.entitled,
+        'entitled': question.entitled[lang],
         'entitled_type': question.entitledType.label,
-        'answers': question.answers,
+        'answers': question.answers.map((a) => a[lang]).toList(),
         'answers_type': question.answersType.label,
         'difficulty': question.difficulty
       });

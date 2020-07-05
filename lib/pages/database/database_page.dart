@@ -38,9 +38,9 @@ class DatabasePage extends StatelessWidget {
                   themes: databaseProvider.models?.themes?.values?.toList(),
                   supportedLanguages: databaseProvider.models?.languages?.values,
                 ),
-                QuestionListWidget(
+                // QuestionListWidget(
 
-                ),
+                // ),
               ],
             ),
           ),
@@ -58,7 +58,7 @@ class DatabaseActionBar extends StatelessWidget {
       children: [
         AppButton(
           child: Text("Update database"),
-          onPressed: () {},
+          onPressed: () => onPublishDatabase(context),
           style: AppButtonStyle.primary,
         ),
         AppButton(
@@ -68,5 +68,9 @@ class DatabaseActionBar extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  onPublishDatabase(context) async {
+    await Provider.of<DatabaseProvider>(context, listen: false).publishDatabase();
   }
 }

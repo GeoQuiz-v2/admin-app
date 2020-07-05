@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 
 class CloudStorageService implements IStorageService {
-  StorageReference _firebaseStorage = storage().ref();
+  StorageReference _firebaseStorage = storage().ref("");
   
   @override
   Future<int> retrieveDatabaseVersion() async {
@@ -23,7 +23,8 @@ class CloudStorageService implements IStorageService {
   Future<int> publishDatabase(DatabaseWrapper models) async {
     for (var lang in models.languages.values.map((l) => l.isoCode2).toList()) {
       try {
-        var databaseFileName = '${database}_${lang}';
+        var databaseFileName = 'database_$lang';
+        print("Upload $databaseFileName");
         var databaseFileRef = _firebaseStorage.child(databaseFileName);
         var databaseJson = {
           'themes': _serializeThemes(models.themes.values, lang),
@@ -31,12 +32,20 @@ class CloudStorageService implements IStorageService {
         };
         var taskUploadDatabaseContent = databaseFileRef.putString(jsonEncode(databaseJson));
         await taskUploadDatabaseContent.future;
+        print("Upload of $databaseFileName finished");
       } catch (e) {
-        print(e);
+        print((e as FirebaseError).serverResponse);
       }
     }
-    var currentPublishedVersion = await retrieveDatabaseVersion();
-    var newVersion = (currentPublishedVersion??0) + 1;
+    int newVersion = 1;
+    try {
+      var currentPublishedVersion = await retrieveDatabaseVersion();
+      newVersion = currentPublishedVersion + 1;
+    } catch (e) {
+      print(e);
+      print("No previous version exists");
+    }
+    print("Upload new database verison : $newVersion");
     var versionFileRef = _firebaseStorage.child("version");
     var taskUpdateDatabaseVersion = versionFileRef.putString(newVersion.toString()); 
     await taskUpdateDatabaseVersion.future;
@@ -44,7 +53,7 @@ class CloudStorageService implements IStorageService {
     return newVersion;
   }
 
-  List<Map<String, Object>> _serializeThemes(List<ThemeModel> themes, String lang) {
+  List<Map<String, Object>> _serializeThemes(Iterable<ThemeModel> themes, String lang) {
     var themesJson = <Map<String,Object>>[];
     for (var theme in themes) {
       themesJson.add({
@@ -58,7 +67,7 @@ class CloudStorageService implements IStorageService {
     return themesJson;
   }
 
-  List<Map<String, Object>> _serializeQuestions(List<QuestionModel> questions, String lang) {
+  List<Map<String, Object>> _serializeQuestions(Iterable<QuestionModel> questions, String lang) {
     var questionsJson = <Map<String,Object>>[];
     for (var question in questions) {
       questionsJson.add({

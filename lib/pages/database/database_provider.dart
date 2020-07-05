@@ -20,7 +20,7 @@ class DatabaseProvider extends ChangeNotifier {
   });
 
   init() async {
-    var questions = {}; 
+    var questions = <String, QuestionModel>{}; 
     var themes = await databaseService.themesDao.list();
     var languages = await databaseService.languagesDao.list();
     models = DatabaseWrapper(

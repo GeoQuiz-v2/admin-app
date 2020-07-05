@@ -10,8 +10,3 @@ class IntlResource {
   });
 }
 
-enum ResourceType {
-  image,
-  text,
-  geopoint,
-}

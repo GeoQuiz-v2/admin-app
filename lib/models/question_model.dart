@@ -1,5 +1,6 @@
 import 'package:admin/models/model.dart';
 import 'package:admin/utils/intl_resource.dart';
+import 'package:admin/utils/resource_type.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionModel extends Model {

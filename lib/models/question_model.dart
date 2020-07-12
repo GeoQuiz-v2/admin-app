@@ -13,7 +13,7 @@ class QuestionModel extends Model {
   int difficulty;
 
   QuestionModel({
-    String id,
+    this.id,
     @required this.theme,
     @required this.entitledType,
     @required this.entitled,

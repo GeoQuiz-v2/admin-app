@@ -1,3 +1,4 @@
+import 'package:admin/components/app_intl_resource_form_field.dart';
 import 'package:admin/models/language_model.dart';
 import 'package:admin/models/question_model.dart';
 import 'package:admin/models/theme_model.dart';
@@ -68,7 +69,7 @@ class QuestionAdapter implements NoSqlAdapter<QuestionModel> {
     var entitledType = ResourceType.fromLabel(json['entitledType']);
     var entitled = IntlResourceAdapter().from(json['entitled']);
     var answersType = ResourceType.fromLabel(json['answersType']);
-    var answers = (json['answers'] as List).map((a) => IntlResourceAdapter().from(a));
+    var answers = (json['answers'] as List)?.map((a) => IntlResourceAdapter().from(a));
     var difficulty = json['difficulty'];
     return QuestionModel(
       id: id,
@@ -85,10 +86,10 @@ class QuestionAdapter implements NoSqlAdapter<QuestionModel> {
   Map<String, Object> to(QuestionModel model) {
     return {
       'theme': model.theme,
-      'entitledType': model.entitledType,
-      'entitled': model.entitled,
-      'answersType': model.answersType.label,
-      'answers': model.answers.map((a) => IntlResourceAdapter().to(a)).toList(),
+      'entitledType': model.entitledType?.label,
+      'entitled': IntlResourceAdapter().to(model.entitled),
+      'answersType': model.answersType?.label,
+      'answers': model.answers?.map((a) => IntlResourceAdapter().to(a))?.toList(),
       'difficulty': model.difficulty
     };
   }

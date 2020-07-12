@@ -15,7 +15,7 @@ class DatabaseProvider extends ChangeNotifier {
   DatabaseWrapper models;
   List<LanguageModel> get languages => models?.languages?.values?.toList();
   List<ThemeModel> get themes => models?.themes?.values?.toList();
-  List<QuestionModel> get questions => models?.questions?.values?.toList();
+  List<QuestionModel> get questions => models?.questions?.values?.where((q) => q.theme == selectedTheme?.id)?.toList();
 
   ThemeModel _selectedTheme;
   ThemeModel get selectedTheme => _selectedTheme;
@@ -30,7 +30,7 @@ class DatabaseProvider extends ChangeNotifier {
   });
 
   init() async {
-    var questions = await databaseService.questionsDao.list(); 
+    var questions = await databaseService.questionsDao.list();
     var themes = await databaseService.themesDao.list();
     var languages = await databaseService.languagesDao.list();
     models = DatabaseWrapper(

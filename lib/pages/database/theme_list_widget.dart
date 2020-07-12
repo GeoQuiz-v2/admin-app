@@ -3,12 +3,15 @@ import 'dart:ui';
 import 'package:admin/components/app_button.dart';
 import 'package:admin/components/app_color_picker.dart';
 import 'package:admin/components/app_integer_selector.dart';
+import 'package:admin/components/app_intl_column_view.dart';
 import 'package:admin/components/app_intl_resource_form_field.dart';
+import 'package:admin/components/app_model_actions.dart';
 import 'package:admin/components/app_model_edition_dialog.dart';
 import 'package:admin/components/app_model_listview.dart';
 import 'package:admin/components/app_subtitle.dart';
 import 'package:admin/components/app_window.dart';
 import 'package:admin/models/language_model.dart';
+import 'package:admin/models/model.dart';
 import 'package:admin/models/theme_model.dart';
 import 'package:admin/pages/database/database_provider.dart';
 import 'package:flutter/material.dart';
@@ -63,41 +66,24 @@ class _ThemesListWidgetState extends State<ThemesListWidget> {
                       groupValue: databaseProvider.selectedTheme,
                       onChanged: (t) => databaseProvider.selectedTheme = t,
                     ),
-            (t) =>  Column(
-                      children: widget.supportedLanguages.map((l) => Text(l.isoCode2)).toList()
-                    ),
+            (t) =>  AppIntlLanguagesColumn(languages: widget.supportedLanguages),
             (t) =>  Text("icon"),
-            (t) =>  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: widget.supportedLanguages.map((l) => 
-                        Text(t.name.resource[l.isoCode2]??"")
-                      ).toList(),
+            (t) =>  AppIntlColumnView(
+                      languages: widget.supportedLanguages,
+                      intlRes: t.name,
                     ),
-            (t) =>  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: widget.supportedLanguages.map((l) => 
-                        Text(t.entitled.resource[l.isoCode2]??"")
-                      ).toList(),
+            (t) =>  AppIntlColumnView(
+                      languages: widget.supportedLanguages,
+                      intlRes: t.entitled,
                     ),
             (t) =>  Text(t.color?.toString()??""),
             (t) =>  Text(t.priority?.toString()??""),
-            (t) =>  Row(
-                      children: [
-                        InkWell(
-                          child: Icon(Icons.edit),
-                          onTap: () {
-                            final databaseProvider = Provider.of<DatabaseProvider>(context, listen: false);
-                            ThemeEditionDialog(
-                              initialTheme: t, 
-                              databaseProvider: databaseProvider
-                            )..show(context);
-                          }
-                        ),
-                        InkWell(
-                          child: Icon(Icons.delete),
-                          onTap: () {},
-                        )
-                      ],
+            (t) =>  ModelActionsWidget(
+                      dialog: ThemeEditionDialog(
+                        initialTheme: t, 
+                        databaseProvider: databaseProvider
+                      ),
+                      onDelete: () {},
                     ),
           ],
         ),
@@ -105,7 +91,6 @@ class _ThemesListWidgetState extends State<ThemesListWidget> {
     );
   }
 }
-
 
 
 class ThemeEditionDialog extends AppModelEditionDialog {
@@ -149,6 +134,25 @@ class _ThemeEditionDialogState extends AppModelEditionDialogState {
     super.dispose();
   }
 
+  save() {
+    if (_formKey.currentState.validate()) {
+      var updatedTheme = ThemeModel(
+        id: widget.initialModel?.id,
+        entitled: entitledController.resource,
+        name: nameController.resource,
+        color: colorController.color,
+        priority: priorityController.value,
+        svgIcon: iconController.text,
+      );
+      widget.databaseProvider.saveTheme(updatedTheme).then((_) {
+        dismiss();
+      }).catchError((e) {
+        print(e);
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.toString()),));
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppWindow(
@@ -184,24 +188,5 @@ class _ThemeEditionDialogState extends AppModelEditionDialogState {
         ),
       )
     );
-  }
-
-  save() {
-    if (_formKey.currentState.validate()) {
-      var updatedTheme = ThemeModel(
-        id: widget.initialModel?.id,
-        entitled: entitledController.resource,
-        name: nameController.resource,
-        color: colorController.color,
-        priority: priorityController.value,
-        svgIcon: iconController.text,
-      );
-      widget.databaseProvider.saveTheme(updatedTheme).then((_) {
-        dismiss();
-      }).catchError((e) {
-        print(e);
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.toString()),));
-      });
-    }
   }
 }

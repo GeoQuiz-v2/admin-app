@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 class IntlResource {
   String wikidataCode;
   Map<String, String> resource;
+  String get defaultLanguage => 'en';
   String get defaultResource => resource['en'];
 
   IntlResource({

@@ -61,7 +61,12 @@ class QuestionListWidget extends StatelessWidget {
                       intlRes: q.entitled
                     ),
             (q) =>  Text(q.answersType.label),
-            (q) =>  Text(q.entitledType.label),
+            (q) =>  Row(
+                      children: q?.answers?.map((a) => AppIntlColumnView(
+                        languages: supportedLanguages,
+                        intlRes: a,
+                      ))?.toList()??[],
+                    ), 
             (q) =>  Text(q.difficulty?.toString()??""),
             (q) =>  ModelActionsWidget(
                       dialog: QuestionEditionDialog(
@@ -120,14 +125,14 @@ class _QuestionEditionDialogState extends AppModelEditionDialogState {
 
   save() {
     if (_formKey.currentState.validate()) {
-      var theme = (widget.initialModel as QuestionModel).theme??widget.databaseProvider.selectedTheme.id;
+      var theme = (widget.initialModel as QuestionModel)?.theme??widget.databaseProvider.selectedTheme.id;
       var updatedQuestion = QuestionModel(
         id: widget.initialModel?.id,
         theme: theme,
         entitledType: entitledTypeController.value,
         entitled: entitledController.resource,
         answersType: answersTypeController.value,
-        answers: null,
+        answers: answerControllers.map((c) => c.resource).toList(),
         difficulty: difficultyController.value,
       );
       widget.databaseProvider.saveQuestion(updatedQuestion).then((_) {

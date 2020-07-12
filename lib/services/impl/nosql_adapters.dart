@@ -69,7 +69,7 @@ class QuestionAdapter implements NoSqlAdapter<QuestionModel> {
     var entitledType = ResourceType.fromLabel(json['entitledType']);
     var entitled = IntlResourceAdapter().from(json['entitled']);
     var answersType = ResourceType.fromLabel(json['answersType']);
-    var answers = (json['answers'] as List)?.map((a) => IntlResourceAdapter().from(a));
+    var answers = (json['answers'] as List)?.map((a) => IntlResourceAdapter().from(a))?.toList();
     var difficulty = json['difficulty'];
     return QuestionModel(
       id: id,

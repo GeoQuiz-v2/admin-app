@@ -58,7 +58,7 @@ class _ThemesListWidgetState extends State<ThemesListWidget> {
         ),
         AppModelListView<ThemeModel>(
           models: widget.themes,
-          weights: [1,2,2,4,4,10,2,2],
+          weights: [1,2,2,4,2,10,2,2],
           labels: [Container(), Container(), Text("Icon"), Text("Theme"), Text("Color"), Text("Entitled"), Text("Priority"), Container()],
           cellsBuilders: [
             (t) =>  Radio<ThemeModel>(
@@ -72,11 +72,15 @@ class _ThemesListWidgetState extends State<ThemesListWidget> {
                       languages: widget.supportedLanguages,
                       intlRes: t.name,
                     ),
+            (t)     {
+                      Color color;
+                      try { color = Color(t.color); } catch(e) {}
+                      return CircleAvatar(backgroundColor: color??Colors.transparent);
+                    },
             (t) =>  AppIntlColumnView(
                       languages: widget.supportedLanguages,
                       intlRes: t.entitled,
                     ),
-            (t) =>  Text(t.color?.toString()??""),
             (t) =>  Text(t.priority?.toString()??""),
             (t) =>  ModelActionsWidget(
                       dialog: ThemeEditionDialog(

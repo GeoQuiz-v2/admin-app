@@ -34,7 +34,9 @@ class CloudStorageService implements IStorageService {
         await taskUploadDatabaseContent.future;
         print("Upload of $databaseFileName finished");
       } catch (e) {
-        print((e as FirebaseError).serverResponse);
+        print(e);
+        if (e is FirebaseError)
+          print(e.serverResponse);
       }
     }
     int newVersion = 1;

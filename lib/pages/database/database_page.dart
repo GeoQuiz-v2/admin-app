@@ -23,6 +23,7 @@ class DatabasePage extends StatelessWidget {
           storageService: CloudStorageService()
         )..init()),
         ChangeNotifierProvider<TranslationProvider>(create: (_) => TranslationProvider(
+          databaseService: CloudFirestoreService(),
           translationService: WikiDataTranslationService()
         ),)
       ],

@@ -51,7 +51,7 @@ class QuestionListWidget extends StatelessWidget {
         ),
         AppModelListView<QuestionModel>(
           weights: [1,1,2,1,8,1,1],
-          labels: [Container(), Text("Type"), Text("Entitled"), Text("Type"), Text("Answers"), Text("Difficulty"), Container()],
+          labels: [Container(), Text("Type"), Text("Entitled"), Text("Type"), Text("Answers (first is correct)"), Text("Difficulty"), Container()],
           models: questions,
           cellsBuilders: <Widget Function(QuestionModel)>[
             (q) =>  AppIntlLanguagesColumn(languages: supportedLanguages),
@@ -62,9 +62,12 @@ class QuestionListWidget extends StatelessWidget {
                     ),
             (q) =>  Text(q.answersType.label),
             (q) =>  Row(
-                      children: q?.answers?.map((a) => AppIntlColumnView(
-                        languages: supportedLanguages,
-                        intlRes: a,
+                      children: q?.answers?.map((a) => Expanded(
+                        flex: 1,
+                        child: AppIntlColumnView(
+                          languages: supportedLanguages,
+                          intlRes: a,
+                        ),
                       ))?.toList()??[],
                     ), 
             (q) =>  Text(q.difficulty?.toString()??""),

@@ -21,7 +21,7 @@ class AppIntlColumnView extends StatelessWidget {
         RichText(
           text: TextSpan(
             style: Theme.of(context).textTheme.bodyText2,
-            text: intlRes.resource[l.isoCode2]??"",
+            text: intlRes.resource[l.isoCode2]??"×",
             children: [
               if (intlRes.defaultLanguage == l.isoCode2 && intlRes.wikidataCode != null)
                 TextSpan(

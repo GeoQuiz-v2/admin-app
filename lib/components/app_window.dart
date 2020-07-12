@@ -12,14 +12,23 @@ class AppWindow extends StatelessWidget {
     @required this.bottom,
   }) : super(key: key);
   
+  double calculateWidth(context) {
+    double maxWidth = 750;
+    double availableWidth = MediaQuery.of(context).size.width - 60; // 60 = margin
+    return availableWidth < maxWidth ? availableWidth : maxWidth;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        title,
-        content,
-        bottom,
-      ],
+    return SizedBox(
+      width: calculateWidth(context),
+      child: Column(
+        children: [
+          title,
+          Expanded(child: SingleChildScrollView(child: content)),
+          bottom,
+        ],
+      ),
     );
   }
 }

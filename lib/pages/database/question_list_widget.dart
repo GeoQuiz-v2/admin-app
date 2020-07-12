@@ -98,6 +98,7 @@ class _QuestionEditionDialogState extends AppModelEditionDialogState {
   IntlResourceEditingController entitledController;
   TypePickerController answersTypeController;
   IntegerSelectorController difficultyController;
+  List<IntlResourceEditingController> answerControllers;
 
   @override
   QuestionEditionDialog get widget => super.widget as QuestionEditionDialog;
@@ -110,6 +111,11 @@ class _QuestionEditionDialogState extends AppModelEditionDialogState {
     entitledController = IntlResourceEditingController(resource: question?.entitled);
     answersTypeController = TypePickerController(initialType: question?.answersType);
     difficultyController = IntegerSelectorController(selectedValue: question?.difficulty);
+    answerControllers = [];
+    question?.answers?.forEach((a) => answerControllers.add(IntlResourceEditingController(resource: a)));
+    while (answerControllers.length < 4) {
+      answerControllers.add(IntlResourceEditingController());
+    }
   }
 
   save() {
@@ -135,6 +141,7 @@ class _QuestionEditionDialogState extends AppModelEditionDialogState {
 
   @override
   Widget build(BuildContext context) {
+    final languages = widget.databaseProvider.languages.map((l) => l.isoCode2).toList();
     return AppWindow(
       title: Text("Question Edition"),
       bottom: AppButton(
@@ -151,12 +158,18 @@ class _QuestionEditionDialogState extends AppModelEditionDialogState {
             ),
             IntlResourceFormField(
               controller: entitledController,
-              languages: widget.databaseProvider.languages.map((l) => l.isoCode2).toList(),
+              languages: languages,
             ),
             AppTypePicker(
               types: ResourceType.values,
               controller: answersTypeController,
             ),
+            ...List.generate(answerControllers.length, (i) => i).map((i) => 
+              IntlResourceFormField(
+                languages: languages,
+                controller: answerControllers.elementAt(i),
+              ),
+            ).toList(),
             IntegerSelector(
               controller: difficultyController,
             )

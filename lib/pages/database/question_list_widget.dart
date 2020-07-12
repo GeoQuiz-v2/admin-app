@@ -40,7 +40,7 @@ class QuestionListWidget extends StatelessWidget {
           trailing: [
             AppButton(
               style: AppButtonStyle.ligth,
-              onPressed: () {
+              onPressed: databaseProvider.selectedTheme == null ? null : () {
                 QuestionEditionDialog(
                   databaseProvider: databaseProvider,
                 )..show(context);
@@ -73,6 +73,7 @@ class QuestionListWidget extends StatelessWidget {
                         databaseProvider: databaseProvider,
                         inititalQuestion: q,
                       ),
+                      onDelete: () => databaseProvider.deleteQuestion(q),
                     )
           ],
         )
@@ -146,7 +147,6 @@ class _QuestionEditionDialogState extends AppModelEditionDialogState {
 
   @override
   Widget build(BuildContext context) {
-    final languages = widget.databaseProvider.languages.map((l) => l.isoCode2).toList();
     return AppWindow(
       title: Text("Question Edition"),
       bottom: AppButton(
@@ -163,7 +163,8 @@ class _QuestionEditionDialogState extends AppModelEditionDialogState {
             ),
             IntlResourceFormField(
               controller: entitledController,
-              languages: languages,
+              languages: widget.languages,
+              validator: basicIntlValidator,
             ),
             AppTypePicker(
               types: ResourceType.values,
@@ -171,8 +172,9 @@ class _QuestionEditionDialogState extends AppModelEditionDialogState {
             ),
             ...List.generate(answerControllers.length, (i) => i).map((i) => 
               IntlResourceFormField(
-                languages: languages,
+                languages: widget.languages,
                 controller: answerControllers.elementAt(i),
+                validator: basicIntlValidator,
               ),
             ).toList(),
             IntegerSelector(

@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 
+final String Function(IntlResource) basicIntlValidator = (r) {
+  return r == null || r.defaultResource == null || r.defaultResource.isEmpty ? 'Invalid' : null;
+};
+
+
 class IntlResourceFormField extends FormField<IntlResource> {
   final IntlResourceEditingController controller;
 
@@ -13,8 +18,8 @@ class IntlResourceFormField extends FormField<IntlResource> {
     @required this.controller,
   }) : super(
     key: key,
-    validator: validator,
-    builder: (FormFieldState<IntlResource> field) {
+    validator: (_) => validator(controller.resource),
+    builder: (FormFieldState<IntlResource> state) {
       return Column(
         children: [
           Row(
@@ -50,6 +55,8 @@ class IntlResourceFormField extends FormField<IntlResource> {
               ),
             ],
           )).toList(),
+          if (state.hasError)
+            Text(state.errorText)
         ]
       );
     }
@@ -63,6 +70,9 @@ class IntlResourceFormField extends FormField<IntlResource> {
 class _IntlResourceFormFieldState extends FormFieldState<IntlResource> {
   @override
   IntlResourceFormField get widget => super.widget as IntlResourceFormField;
+
+  @override
+  IntlResource get value => widget.controller.resource;
 
   @override
   void initState() {

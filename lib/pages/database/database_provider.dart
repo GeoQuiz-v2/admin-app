@@ -42,26 +42,45 @@ class DatabaseProvider extends ChangeNotifier {
   }
 
   Future saveLanguage(LanguageModel model) async {
-    _saveModelsWorker(model, models.languages, databaseService.languagesDao);
+    _saveModelWorker(model, models.languages, databaseService.languagesDao);
   }
 
   Future saveTheme(ThemeModel model) async {
-    _saveModelsWorker(model, models.themes, databaseService.themesDao);
+    _saveModelWorker(model, models.themes, databaseService.themesDao);
   }
 
   Future saveQuestion(QuestionModel model) async {
-    _saveModelsWorker(model, models.questions, databaseService.questionsDao);
+    _saveModelWorker(model, models.questions, databaseService.questionsDao);
   }
 
-  Future _saveModelsWorker(Model model, Map modelsMap, IDao dao) async {
+  Future deleteLanguage(LanguageModel model) async {
+    _deleteModelWorker(model, models.languages, databaseService.languagesDao);
+  }
+
+  Future deleteTheme(ThemeModel model) async {
+    _deleteModelWorker(model, models.themes, databaseService.themesDao);
+  }
+
+  Future deleteQuestion(QuestionModel model) async {
+    _deleteModelWorker(model, models.questions, databaseService.questionsDao);
+  }
+
+  Future _saveModelWorker(Model model, Map modelsMap, IDao dao) async {
     String modelId;
     if (model.id == null) {
       modelId = await dao.create(model);
+      model.id = modelId;
     } else {
       await dao.update(model);
       modelId = model.id;
     }
     modelsMap[modelId] = model;
+    notifyListeners();
+  }
+
+  Future _deleteModelWorker(Model model, Map modelsMap, IDao dao) async {
+    dao.delete(model);
+    modelsMap.remove(model.id);
     notifyListeners();
   }
  

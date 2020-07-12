@@ -83,7 +83,7 @@ class _ThemesListWidgetState extends State<ThemesListWidget> {
                         initialTheme: t, 
                         databaseProvider: databaseProvider
                       ),
-                      onDelete: () {},
+                      onDelete: () => databaseProvider.deleteTheme(t),
                     ),
           ],
         ),
@@ -167,7 +167,8 @@ class _ThemeEditionDialogState extends AppModelEditionDialogState {
           children: [
             IntlResourceFormField(
               controller: nameController,
-              languages: ["fr", "en"],
+              languages: widget.languages,
+              validator: basicIntlValidator,
             ),
             TextFormField(
               controller: iconController,
@@ -179,7 +180,8 @@ class _ThemeEditionDialogState extends AppModelEditionDialogState {
             ),
             IntlResourceFormField(
               controller: entitledController,
-              languages: ["fr", "en"],
+              languages: widget.languages,
+              validator: basicIntlValidator,
             ),
             IntegerSelector(
               controller: priorityController,

@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 abstract class AppModelEditionDialog<T extends Model> extends StatefulWidget {
   final T initialModel;
   final DatabaseProvider databaseProvider;
+  List<String> get languages => databaseProvider.languages.map((l) => l.isoCode2).toList();
 
   show(context) {
     showDialog(

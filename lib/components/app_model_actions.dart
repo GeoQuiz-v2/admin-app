@@ -8,7 +8,7 @@ class ModelActionsWidget extends StatelessWidget {
 
   ModelActionsWidget({
     Key key,
-    this.dialog,
+    @required this.dialog,
     this.onDelete
   }) : super(key: key);
 
@@ -22,10 +22,11 @@ class ModelActionsWidget extends StatelessWidget {
             dialog.show(context);
           }
         ),
-        InkWell(
-          child: Icon(Icons.delete),
-          onTap: onDelete,
-        )
+        if (onDelete != null)
+          InkWell(
+            child: Icon(Icons.delete),
+            onTap: onDelete,
+          )
       ],
     );
   }

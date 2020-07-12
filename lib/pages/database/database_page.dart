@@ -32,15 +32,17 @@ class DatabasePage extends StatelessWidget {
             child: Column(
               children: [
                 LanguageListWidget(
-                  languages: databaseProvider.models?.languages?.values
+                  languages: databaseProvider.languages
                 ),
                 ThemesListWidget(
-                  themes: databaseProvider.models?.themes?.values?.toList(),
-                  supportedLanguages: databaseProvider.models?.languages?.values,
+                  themes: databaseProvider.themes,
+                  supportedLanguages: databaseProvider.languages,
                 ),
-                // QuestionListWidget(
-
-                // ),
+                QuestionListWidget(
+                  selectedTheme: databaseProvider.themes?.first,
+                  questions: databaseProvider.questions,
+                  supportedLanguages: databaseProvider.languages,
+                ),
               ],
             ),
           ),

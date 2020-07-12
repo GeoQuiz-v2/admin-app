@@ -5,6 +5,7 @@ import 'package:admin/components/app_color_picker.dart';
 import 'package:admin/components/app_integer_selector.dart';
 import 'package:admin/components/app_intl_resource_form_field.dart';
 import 'package:admin/components/app_model_edition_dialog.dart';
+import 'package:admin/components/app_model_listview.dart';
 import 'package:admin/components/app_subtitle.dart';
 import 'package:admin/components/app_window.dart';
 import 'package:admin/models/language_model.dart';
@@ -32,7 +33,7 @@ class ThemesListWidget extends StatefulWidget {
 }
 
 class _ThemesListWidgetState extends State<ThemesListWidget> {
-  ThemeModel selectedTheme;
+  DatabaseProvider get databaseProvider => Provider.of<DatabaseProvider>(context, listen: false);
   
   @override
   Widget build(BuildContext context) {
@@ -42,144 +43,69 @@ class _ThemesListWidgetState extends State<ThemesListWidget> {
           child: Text("Themes"),
           trailing: [
             AppButton(
-              child: Text("Add"),
               style: AppButtonStyle.ligth,
               onPressed: () {
-                final databaseProvider = Provider.of<DatabaseProvider>(context, listen: false);
                 ThemeEditionDialog(
                   databaseProvider: databaseProvider,
                 )..show(context);
               },
+              child: Text("Add"),
             )
           ],
         ),
-        ThemeItemHeaderWidget(),
-        widget.themes == null
-          ? Text("Loading")
-          : ListView.separated(
-              shrinkWrap: true,
-              itemCount: widget.themes.length,
-              separatorBuilder: (context, i) => Divider(color: Colors.black, thickness: window.devicePixelRatio, height: 10,),
-              itemBuilder: (context, i) {
-                final theme = widget.themes.elementAt(i);
-                return ThemeitemWidget(
-                  theme: theme,
-                  supportedLanguages: widget.supportedLanguages,
-                  isSelected: selectedTheme == theme,
-                  onSelected: (t) => setState(() => this.selectedTheme = t),
-                );
-              } 
-            )
+        AppModelListView<ThemeModel>(
+          models: widget.themes,
+          weights: [1,2,2,4,4,10,2,2],
+          labels: [Container(), Container(), Text("Icon"), Text("Theme"), Text("Color"), Text("Entitled"), Text("Priority"), Container()],
+          cellsBuilders: [
+            (t) =>  Radio<ThemeModel>(
+                      value: t,
+                      groupValue: databaseProvider.selectedTheme,
+                      onChanged: (t) => databaseProvider.selectedTheme = t,
+                    ),
+            (t) =>  Column(
+                      children: widget.supportedLanguages.map((l) => Text(l.isoCode2)).toList()
+                    ),
+            (t) =>  Text("icon"),
+            (t) =>  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: widget.supportedLanguages.map((l) => 
+                        Text(t.name.resource[l.isoCode2]??"")
+                      ).toList(),
+                    ),
+            (t) =>  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: widget.supportedLanguages.map((l) => 
+                        Text(t.entitled.resource[l.isoCode2]??"")
+                      ).toList(),
+                    ),
+            (t) =>  Text(t.color?.toString()??""),
+            (t) =>  Text(t.priority?.toString()??""),
+            (t) =>  Row(
+                      children: [
+                        InkWell(
+                          child: Icon(Icons.edit),
+                          onTap: () {
+                            final databaseProvider = Provider.of<DatabaseProvider>(context, listen: false);
+                            ThemeEditionDialog(
+                              initialTheme: t, 
+                              databaseProvider: databaseProvider
+                            )..show(context);
+                          }
+                        ),
+                        InkWell(
+                          child: Icon(Icons.delete),
+                          onTap: () {},
+                        )
+                      ],
+                    ),
+          ],
+        ),
       ],
     );
   }
 }
 
-
-class ThemeItemHeaderWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(flex: 1, child: Container()), // radio button
-        Expanded(flex: 2, child: Container()), // languages
-        Expanded(flex: 2, child: Text("Icon")),
-        Expanded(flex: 4, child: Text("Theme")),
-        Expanded(flex: 4, child: Text("Color")),
-        Expanded(flex: 10, child: Text("Entitled")),
-        Expanded(flex: 2, child: Text("Priority")),
-        Expanded(flex: 2, child: Container()) // edition/delete btns
-      ],
-    );
-  }
-}
-
-
-class ThemeitemWidget extends StatelessWidget {
-  final Iterable<LanguageModel> supportedLanguages;
-  final ThemeModel theme;
-  final Function(ThemeModel) onSelected;
-  final bool isSelected;
-
-  ThemeitemWidget({
-    Key key,
-    @required this.supportedLanguages,
-    @required this.theme,
-    @required this.onSelected,
-    @required this.isSelected,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: Radio<ThemeModel>(
-            value: theme,
-            groupValue: isSelected ? theme : null,
-            onChanged: onSelected,
-          ),
-        ),
-        Expanded(
-          flex: 2,
-          child: Column(children: supportedLanguages.map((l) => Text(l.isoCode2)).toList()),
-        ),
-        Expanded(
-          flex: 2,
-          child: Text("icon")
-        ),
-        Expanded(
-          flex: 4,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: supportedLanguages.map((l) => 
-              Text(theme.name.resource[l.isoCode2]??"")
-            ).toList(),
-          ),
-        ),
-        Expanded(
-          flex: 4,
-          child: Text(theme.color?.toString()??""),
-        ),
-        Expanded(
-          flex: 10,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: supportedLanguages.map((l) => 
-              Text(theme.entitled.resource[l.isoCode2]??"")
-            ).toList(),
-          ),
-        ),
-        Expanded(
-          flex: 2,
-          child: Text(theme.priority?.toString()??""),
-        ),
-        Expanded(
-          flex: 2,
-          child: Row(
-            children: [
-              InkWell(
-                child: Icon(Icons.edit),
-                onTap: () {
-                  final databaseProvider = Provider.of<DatabaseProvider>(context, listen: false);
-                  ThemeEditionDialog(
-                    initialTheme: theme, 
-                    databaseProvider: databaseProvider
-                  )..show(context);
-                }
-              ),
-              InkWell(
-                child: Icon(Icons.delete),
-                onTap: () {},
-              )
-            ],
-          )
-        )
-      ],
-    );
-  }
-}
 
 
 class ThemeEditionDialog extends AppModelEditionDialog {

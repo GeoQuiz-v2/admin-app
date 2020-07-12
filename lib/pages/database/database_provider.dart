@@ -13,6 +13,16 @@ class DatabaseProvider extends ChangeNotifier {
   final IStorageService storageService;
 
   DatabaseWrapper models;
+  List<LanguageModel> get languages => models?.languages?.values?.toList();
+  List<ThemeModel> get themes => models?.themes?.values?.toList();
+  List<QuestionModel> get questions => models?.questions?.values?.toList();
+
+  ThemeModel _selectedTheme;
+  ThemeModel get selectedTheme => _selectedTheme;
+  set selectedTheme(ThemeModel t) {
+    _selectedTheme = t;
+    notifyListeners();
+  }
 
   DatabaseProvider({
     @required this.databaseService, 
@@ -20,7 +30,7 @@ class DatabaseProvider extends ChangeNotifier {
   });
 
   init() async {
-    var questions = <String, QuestionModel>{}; 
+    var questions = await databaseService.questionsDao.list(); 
     var themes = await databaseService.themesDao.list();
     var languages = await databaseService.languagesDao.list();
     models = DatabaseWrapper(

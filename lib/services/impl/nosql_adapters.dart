@@ -1,8 +1,8 @@
 import 'package:admin/models/language_model.dart';
-import 'package:admin/models/model.dart';
 import 'package:admin/models/question_model.dart';
 import 'package:admin/models/theme_model.dart';
 import 'package:admin/utils/intl_resource.dart';
+import 'package:admin/utils/resource_type.dart';
 
 
 abstract class NoSqlAdapter<T> {
@@ -28,19 +28,6 @@ class LanguageAdapter implements NoSqlAdapter<LanguageModel> {
 }
 
 
-class QuestionAdapter implements NoSqlAdapter<QuestionModel> {
-  @override
-  QuestionModel from(Map<String, Object> json) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Map<String, Object> to(QuestionModel model) {
-    throw UnimplementedError();
-  }
-}
-
-
 class ThemeAdapter implements NoSqlAdapter<ThemeModel> {
   @override
   ThemeModel from(Map<String, Object> json) {
@@ -50,8 +37,14 @@ class ThemeAdapter implements NoSqlAdapter<ThemeModel> {
     var color = json['color'];
     var name = IntlResourceAdapter().from(json['title']);
     var entitled = IntlResourceAdapter().from(json['entitled']);
-    var a = ThemeModel(id: id, svgIcon: icon, priority: priority, name: name, color: color, entitled: entitled);
-    return a;
+    return ThemeModel(
+      id: id, 
+      svgIcon: icon, 
+      priority: priority, 
+      name: name, 
+      color: color, 
+      entitled: entitled
+    );
   }
 
   @override
@@ -62,6 +55,41 @@ class ThemeAdapter implements NoSqlAdapter<ThemeModel> {
       'order': model.priority,
       'title': IntlResourceAdapter().to(model.name),
       'color': model.color
+    };
+  }
+}
+
+
+class QuestionAdapter implements NoSqlAdapter<QuestionModel> {
+  @override
+  QuestionModel from(Map<String, Object> json) {
+    var id = json['id'];
+    var theme = json['theme'];
+    var entitledType = ResourceType.fromLabel(json['entitledType']);
+    var entitled = IntlResourceAdapter().from(json['entitled']);
+    var answersType = ResourceType.fromLabel(json['answersType']);
+    var answers = (json['answers'] as List).map((a) => IntlResourceAdapter().from(a));
+    var difficulty = json['difficulty'];
+    return QuestionModel(
+      id: id,
+      theme: theme,
+      entitledType: entitledType,
+      entitled: entitled,
+      answersType: answersType,
+      answers: answers,
+      difficulty: difficulty,
+    );
+  }
+
+  @override
+  Map<String, Object> to(QuestionModel model) {
+    return {
+      'theme': model.theme,
+      'entitledType': model.entitledType,
+      'entitled': model.entitled,
+      'answersType': model.answersType.label,
+      'answers': model.answers.map((a) => IntlResourceAdapter().to(a)).toList(),
+      'difficulty': model.difficulty
     };
   }
 }

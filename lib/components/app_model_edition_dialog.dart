@@ -26,7 +26,7 @@ abstract class AppModelEditionDialog<T extends Model> extends StatefulWidget {
   AppModelEditionDialogState createState();
 }
 
-abstract class AppModelEditionDialogState extends State<AppModelEditionDialog> {
+abstract class AppModelEditionDialogState<T> extends State<AppModelEditionDialog> {
 
   dismiss() {
     if (mounted) {

@@ -13,7 +13,7 @@ class AppWindow extends StatelessWidget {
   }) : super(key: key);
   
   double calculateWidth(context) {
-    double maxWidth = 750;
+    double maxWidth = 850;
     double availableWidth = MediaQuery.of(context).size.width - 60; // 60 = margin
     return availableWidth < maxWidth ? availableWidth : maxWidth;
   }

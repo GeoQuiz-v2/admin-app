@@ -12,6 +12,7 @@ import 'package:admin/models/language_model.dart';
 import 'package:admin/models/question_model.dart';
 import 'package:admin/models/theme_model.dart';
 import 'package:admin/pages/database/database_provider.dart';
+import 'package:admin/pages/database/database_tools_widget.dart';
 import 'package:admin/utils/resource_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -182,6 +183,7 @@ class _QuestionEditionDialogState extends AppModelEditionDialogState {
               languages: widget.languages,
               validator: basicIntlValidator,
             ),
+            DatabaseToolsWidget(),
             AppTypePicker(
               types: ResourceType.values,
               controller: answersTypeController,

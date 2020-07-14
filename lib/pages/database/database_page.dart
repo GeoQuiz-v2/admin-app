@@ -91,10 +91,15 @@ class DatabaseActionBar extends StatelessWidget {
           onPressed: () => onPublishDatabase(context),
           style: AppButtonStyle.primary,
         ),
-        AppButton(
-          child: Text("Generate translations"),
-          onPressed: () => onGenerateTranslations(context),
-          style: AppButtonStyle.primary,
+        Consumer<TranslationProvider>(
+          builder: (context, provider, child) =>
+            AppButton(
+              child: Text("Generate translations"),
+              onPressed: provider.state == TranslationProviderState.busy 
+                          ? null 
+                          : () => onGenerateTranslations(context),
+              style: AppButtonStyle.primary,
+            )
         ),
         AppButton(
           child: Text("Update schema v1 to v2"),

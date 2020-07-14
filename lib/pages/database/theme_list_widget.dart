@@ -17,6 +17,7 @@ import 'package:admin/pages/database/database_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:websafe_svg/websafe_svg.dart';
 
 
 class ThemesListWidget extends StatefulWidget {
@@ -67,7 +68,7 @@ class _ThemesListWidgetState extends State<ThemesListWidget> {
                       onChanged: (t) => databaseProvider.selectedTheme = t,
                     ),
             (t) =>  AppIntlLanguagesColumn(languages: widget.supportedLanguages),
-            (t) =>  Text("icon"),
+            (t) =>  WebsafeSvg.string(t.svgIcon,height: 35, color: Color(t.color)),
             (t) =>  AppIntlColumnView(
                       languages: widget.supportedLanguages,
                       intlRes: t.name,

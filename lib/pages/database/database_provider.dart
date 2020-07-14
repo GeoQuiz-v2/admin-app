@@ -5,9 +5,9 @@ import 'package:admin/models/question_model.dart';
 import 'package:admin/models/theme_model.dart';
 import 'package:admin/services/database_service.dart';
 import 'package:admin/services/storage_service.dart';
-import 'package:admin/services/translation_service.dart';
 import 'package:admin/utils/dao.dart';
 import 'package:flutter/widgets.dart';
+
 
 class DatabaseProvider extends ChangeNotifier {
   final IDatabaseService databaseService;
@@ -30,7 +30,7 @@ class DatabaseProvider extends ChangeNotifier {
     @required this.storageService,
   });
 
-  init() async {
+  load() async {
     var questions = await databaseService.questionsDao.list();
     var themes = await databaseService.themesDao.list();
     var languages = await databaseService.languagesDao.list();

@@ -7,5 +7,8 @@ abstract class IDatabaseService {
   IDao<QuestionModel> get questionsDao;
   IDao<ThemeModel> get themesDao;
   IDao<LanguageModel> get languagesDao;
+
+  Future upgrade(int oldVersion, int newVersion);
 }
 
+class UpgradeOperationNotSupported implements Exception {}

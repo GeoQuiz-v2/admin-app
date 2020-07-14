@@ -4,6 +4,7 @@ import 'package:admin/models/question_model.dart';
 import 'package:admin/models/theme_model.dart';
 import 'package:admin/utils/intl_resource.dart';
 import 'package:admin/utils/resource_type.dart';
+import 'package:flutter/foundation.dart';
 
 
 abstract class NoSqlAdapter<T> {
@@ -110,5 +111,34 @@ class IntlResourceAdapter implements NoSqlAdapter<IntlResource> {
       'res': model.resource,
       'wikiCode': model.wikidataCode
     };
+  }
+}
+
+
+/// Adapt old question format to the new format
+/// old format :
+///   theme: string
+///   answers : array or string
+///   entitled: string
+///   ...
+class V1FirestoreQuestionAdapter implements QuestionModel {
+  @override String id;
+  @override String theme;
+  @override IntlResource entitled;
+  @override ResourceType entitledType;
+  @override List<IntlResource> answers;
+  @override ResourceType answersType;
+  @override int difficulty;
+
+  V1FirestoreQuestionAdapter({
+    @required this.id,
+    @required Map<String, dynamic> data
+  }) {
+    this.theme = data['theme'];
+    this.entitled = IntlResource(resource: {'en': data['entitled']});
+    this.entitledType = ResourceType.fromLabel(data['entitled_type']);
+    this.answers = (data['answers'] as List).map((a) => IntlResource(resource: {'en' : a})).toList();
+    this.answersType = ResourceType.fromLabel(data['answers_type']);
+    this.difficulty = data['difficulty'];
   }
 }

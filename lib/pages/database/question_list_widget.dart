@@ -102,6 +102,7 @@ class QuestionEditionDialog extends AppModelEditionDialog {
 }
 
 class _QuestionEditionDialogState extends AppModelEditionDialogState {
+  final minimumNumberOfAnswers = 4;
   final _formKey = GlobalKey<FormState>();
   TypePickerController entitledTypeController;
   IntlResourceEditingController entitledController;
@@ -122,7 +123,7 @@ class _QuestionEditionDialogState extends AppModelEditionDialogState {
     difficultyController = IntegerSelectorController(selectedValue: question?.difficulty);
     answerControllers = [];
     question?.answers?.forEach((a) => answerControllers.add(IntlResourceEditingController(resource: a)));
-    while (answerControllers.length < 4) {
+    while (answerControllers.length < minimumNumberOfAnswers) {
       answerControllers.add(IntlResourceEditingController());
     }
   }
@@ -146,6 +147,18 @@ class _QuestionEditionDialogState extends AppModelEditionDialogState {
         Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.toString()),));
       });
     }
+  }
+
+  onAddAnswerField() {
+    setState(() {
+      answerControllers.add(IntlResourceEditingController());
+    });
+  }
+
+  onRemoveAnswerField() {
+    setState(() {
+      answerControllers.removeLast();
+    });
   }
 
   @override
@@ -180,6 +193,20 @@ class _QuestionEditionDialogState extends AppModelEditionDialogState {
                 validator: basicIntlValidator,
               ),
             ).toList(),
+            Row(
+              children: [
+                AppButton(
+                  style: AppButtonStyle.normal,
+                  onPressed: onAddAnswerField,
+                  child: Text("Add answer"),
+                ),
+                AppButton(
+                  style: AppButtonStyle.normal,
+                  onPressed: answerControllers.length <= minimumNumberOfAnswers ? null : onRemoveAnswerField,
+                  child: Text("Remove last answer"),
+                ),
+              ],
+            ),
             IntegerSelector(
               controller: difficultyController,
             )

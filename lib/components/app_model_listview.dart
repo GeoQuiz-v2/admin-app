@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:admin/models/model.dart';
+import 'package:admin/utils/color_transformation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -19,6 +20,8 @@ class AppModelListView<T extends Model> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var backgroundLigth = Theme.of(context).colorScheme.surface;
+    var backgroundDark = ColorTransformation.darken(backgroundLigth, 0.1);
     return Column(
       children: [
         Row(
@@ -29,17 +32,19 @@ class AppModelListView<T extends Model> extends StatelessWidget {
         ),
         models == null
         ? Text("Loading")
-        : ListView.separated(
+        : ListView.builder(
             shrinkWrap: true,
             itemCount: models.length,
-            separatorBuilder: (context, i) => Divider(color: Colors.black, thickness: window.devicePixelRatio, height: 10,),
-            itemBuilder: (context, position) => Row(
+            itemBuilder: (context, position) => Container(
+              color: position % 2 == 0 ? backgroundLigth : backgroundDark,
+              child: Row(
               children: List.generate(labels.length, (i) => i).map((i) => Expanded(
                 flex: weights[i],
                 child: cellsBuilders[i](models[position]),
               )).toList()
             )
           )
+        )
       ],
     );
   }

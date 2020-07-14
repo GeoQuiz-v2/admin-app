@@ -86,19 +86,24 @@ class DatabaseActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        AppButton(
-          child: Text("Update database"),
-          onPressed: () => onPublishDatabase(context),
-          style: AppButtonStyle.primary,
+        Consumer<DatabaseProvider>(
+          builder: (context, provider, child) =>
+            AppButton(
+              style: AppButtonStyle.primary,
+              onPressed: provider.state == DatabaseProviderState.busy 
+                          ? null
+                          : () => onPublishDatabase(context),
+              child: Text("Update database"),
+            )
         ),
         Consumer<TranslationProvider>(
           builder: (context, provider, child) =>
             AppButton(
-              child: Text("Generate translations"),
+              style: AppButtonStyle.primary,
               onPressed: provider.state == TranslationProviderState.busy 
                           ? null 
                           : () => onGenerateTranslations(context),
-              style: AppButtonStyle.primary,
+              child: Text("Generate translations"),
             )
         ),
         AppButton(

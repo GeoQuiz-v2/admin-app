@@ -8,6 +8,11 @@ import 'package:admin/services/storage_service.dart';
 import 'package:admin/utils/dao.dart';
 import 'package:flutter/widgets.dart';
 
+enum DatabaseProviderState {
+  idle,
+  busy,
+}
+
 
 class DatabaseProvider extends ChangeNotifier {
   final IDatabaseService databaseService;
@@ -25,12 +30,20 @@ class DatabaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  DatabaseProviderState _state = DatabaseProviderState.idle;
+  DatabaseProviderState get state => _state;
+  set state(DatabaseProviderState newState) {
+    _state = newState;
+    notifyListeners();
+  }
+
   DatabaseProvider({
     @required this.databaseService, 
     @required this.storageService,
   });
 
   load() async {
+    state = DatabaseProviderState.busy;
     var questions = await databaseService.questionsDao.list();
     var themes = await databaseService.themesDao.list();
     var languages = await databaseService.languagesDao.list();
@@ -39,7 +52,7 @@ class DatabaseProvider extends ChangeNotifier {
       themes: themes,
       questions: questions
     );
-    notifyListeners();
+    state = DatabaseProviderState.idle;
   }
 
   Future saveLanguage(LanguageModel model) async {
@@ -68,6 +81,7 @@ class DatabaseProvider extends ChangeNotifier {
 
 
   Future _saveModelWorker(Model model, Map modelsMap, IDao dao) async {
+    state = DatabaseProviderState.busy;
     String modelId;
     if (model.id == null) {
       modelId = await dao.create(model);
@@ -77,16 +91,19 @@ class DatabaseProvider extends ChangeNotifier {
       modelId = model.id;
     }
     modelsMap[modelId] = model;
-    notifyListeners();
+    state = DatabaseProviderState.idle;
   }
 
   Future _deleteModelWorker(Model model, Map modelsMap, IDao dao) async {
+    state = DatabaseProviderState.busy;
     dao.delete(model);
     modelsMap.remove(model.id);
-    notifyListeners();
+    state = DatabaseProviderState.idle;
   }
  
   Future publishDatabase() async {
+    state = DatabaseProviderState.busy;
     await storageService.publishDatabase(models);
+    state = DatabaseProviderState.idle;
   }
 }

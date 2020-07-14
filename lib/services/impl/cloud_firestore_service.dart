@@ -39,12 +39,15 @@ class CloudFirestoreService implements IDatabaseService {
     final Firestore _firestore = firestore();
     if (oldVersion == 1 && newVersion == 2) {
       var snapshot = await _firestore.collection(questions_col).get();
+      WriteBatch batch = _firestore.batch();
       for (var doc in snapshot.docs) {
         if (doc.get("entitled.res") == null) { // condition to check if the question is v1 or v2
           var question = V1FirestoreQuestionAdapter(id: doc.id, data: doc.data());
-          await _firestore.collection(questions_col).doc(doc.id).set(questionAdapter.to(question));
+          var docRef = _firestore.collection(questions_col).doc(doc.id);
+          batch.set(docRef, questionAdapter.to(question));
         }
       }
+      batch.commit();
     } else {
       throw UpgradeOperationNotSupported();
     }

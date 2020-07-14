@@ -41,22 +41,25 @@ class DatabasePage extends StatelessWidget {
         ),
         body: Consumer<TranslationProvider>(
           builder: (_,__,___) => Consumer<DatabaseProvider>(
-            builder: (context, databaseProvider, _) => SingleChildScrollView(
-              child: Column(
-                children: [
-                  LanguageListWidget(
-                    languages: databaseProvider.languages
-                  ),
-                  ThemesListWidget(
-                    themes: databaseProvider.themes,
-                    supportedLanguages: databaseProvider.languages,
-                  ),
-                  QuestionListWidget(
-                    selectedTheme: databaseProvider.themes?.first,
-                    questions: databaseProvider.questions,
-                    supportedLanguages: databaseProvider.languages,
-                  ),
-                ],
+            builder: (context, databaseProvider, _) => Scrollbar(
+              // isAlwaysShown: true,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    LanguageListWidget(
+                      languages: databaseProvider.languages
+                    ),
+                    ThemesListWidget(
+                      themes: databaseProvider.themes,
+                      supportedLanguages: databaseProvider.languages,
+                    ),
+                    QuestionListWidget(
+                      selectedTheme: databaseProvider.themes?.first,
+                      questions: databaseProvider.questions,
+                      supportedLanguages: databaseProvider.languages,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

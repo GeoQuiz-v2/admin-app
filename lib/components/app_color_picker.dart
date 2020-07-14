@@ -55,7 +55,7 @@ class ColorPicker extends FormField<int> {
                   width: 100,
                   child: TextField(
                     // to not move the cursor at the begin of the text field when the field change
-                    controller: state.hasChanged ? null : TextEditingController(text: state.value?.toString()),
+                    controller: state.hasChanged ? null : TextEditingController(text: controller.color?.toString()),
                     decoration: InputDecoration.collapsed(hintText: "Color"),
                     style: TextStyle(color: getColor(state.value)??Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
                     onChanged: (newValue) {

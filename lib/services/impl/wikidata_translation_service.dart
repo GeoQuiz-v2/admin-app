@@ -19,7 +19,7 @@ class WikiDataTranslationService extends ITranslationService {
       if (wikidataResponse.statusCode == 200 && decodedBody != null && decodedBody['data']['item'] != null) {
         var resourceTranslations = decodedBody['data']['item']['labels'] as List;
         for (var lang in languages) {
-          if (lang != resource.defaultLanguage) { // to not override the default language entry
+          if (lang != IntlResource.defaultLanguage) { // to not override the default language entry
             var translation = resourceTranslations.firstWhere((e) => e['language'] == lang);
             resource.resource[lang] = translation['text'];
           } 

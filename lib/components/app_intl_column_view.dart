@@ -11,30 +11,37 @@ class AppIntlColumnView extends StatelessWidget {
     Key key,
     @required this.languages,
     @required this.intlRes,
-  }) : super(key: key);
+  }) : super(key: key) {
+    this.languages.sort();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: languages.map((l) => 
+      children: [
         RichText(
           text: TextSpan(
             style: Theme.of(context).textTheme.bodyText2,
-            text: intlRes.resource[l.isoCode2]??"×",
+            text: intlRes.defaultResource??"×",
             children: [
-              if (intlRes.defaultLanguage == l.isoCode2 && intlRes.wikidataCode != null)
+              if (intlRes.wikidataCode != null)
                 TextSpan(
                   style: TextStyle(fontStyle: FontStyle.italic),
                   text: ' (${intlRes.wikidataCode})'
                 )
             ]
           ),
-        )
-      ).toList(),
+        ),
+        ...languages.where((l) => l.isoCode2 != IntlResource.defaultLanguage).map((l) => 
+          Text(intlRes.resource[l.isoCode2]??"×")
+        ).toList(),
+      ]
     );
   }
 }
+
+
 
 
 class AppIntlLanguagesColumn extends StatelessWidget {
@@ -43,13 +50,18 @@ class AppIntlLanguagesColumn extends StatelessWidget {
   AppIntlLanguagesColumn({
     Key key,
     @required this.languages,
-  }) : super(key: key);
+  }) : super(key: key) {
+    this.languages.sort();
+  }
 
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: languages.map((l) => Text(l.isoCode2)).toList()
+      children: [
+        Text(IntlResource.defaultLanguage),
+        ...languages.where((l) => l.isoCode2 != 'en').map((l) => Text(l.isoCode2)).toList()
+      ]
     );
   }
 }

@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import "env.dev.dart" if (kDebugMode) "env.prod.dart";
 
-final Environment env = kDebugMode ? prodEnv : prodEnv;
+final Environment env = kDebugMode ? devEnv : prodEnv;
 
 void main() {
   try {
